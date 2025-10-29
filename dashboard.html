@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EduHOUSE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-logout {
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-left h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .header-left small {
+            color: #666;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Course Card */
+        .course-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .course-body {
+            padding: 1.5rem;
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-instructor {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-card.green {
+            border-left-color: #27ae60;
+        }
+
+        .stat-card.orange {
+            border-left-color: #f39c12;
+        }
+
+        .stat-card.red {
+            border-left-color: #e74c3c;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-card.green .stat-value {
+            color: #27ae60;
+        }
+
+        .stat-card.orange .stat-value {
+            color: #f39c12;
+        }
+
+        .stat-card.red .stat-value {
+            color: #e74c3c;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Messages Section */
+        .message-list {
+            list-style: none;
+        }
+
+        .message-item {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .message-time {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .message-content {
+            margin-top: 0.5rem;
+            color: #555;
+        }
+
+        /* Upcoming Classes */
+        .class-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .class-item:last-child {
+            border-bottom: none;
+        }
+
+        .class-time {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            width: 120px;
+            text-align: center;
+            margin-right: 1rem;
+        }
+
+        .class-details {
+            flex: 1;
+        }
+
+        .class-title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .class-instructor {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Assignment Status */
+        .assignment-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .assignment-item:last-child {
+            border-bottom: none;
+        }
+
+        .assignment-due {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .assignment-due.pending {
+            color: #f39c12;
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-live {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge-completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        .badge-pending {
+            background: #f39c12;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 1rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .user-info {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .class-item {
+                flex-wrap: wrap;
+            }
+
+            .class-time {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">🏠 EduHOUSE</div>
+            <ul>
+                <li><a href="#dashboard" class="active">📊 Tableau de Bord</a></li>
+                <li><a href="#courses">📚 Mes Cours</a></li>
+                <li><a href="#live">🎥 Cours en Live</a></li>
+                <li><a href="#tutor">🧑‍🏫 Mon Tuteur</a></li>
+                <li><a href="#assignments">📝 Devoirs</a></li>
+                <li><a href="#messages">💬 Messages</a></li>
+                <li><a href="#exam">🎓 Préparation Bac</a></li>
+                <li><a href="#progress">📈 Progression</a></li>
+                <li><a href="#settings">⚙️ Paramètres</a></li>
+            </ul>
+            <div class="sidebar-logout">
+                <a href="index.html" style="text-align: center;">← Déconnexion</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="header-left">
+                    <h1>Bienvenue, Jean! 👋</h1>
+                    <small>Classe: 2nde A | Dernière visite: Aujourd'hui 10:30</small>
+                </div>
+                <div class="user-info">
+                    <div style="text-align: right;">
+                        <div><strong>Jean Dupont</strong></div>
+                        <div style="font-size: 0.9rem; color: #666;">Élève Premium</div>
+                    </div>
+                    <div class="user-avatar">JD</div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Cours Suivis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Sessions Tuteur</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">Moyenne de Progrès</div>
+                </div>
+                <div class="stat-card red">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Devoirs à Rendre</div>
+                </div>
+            </div>
+
+            <!-- Prochains Cours -->
+            <div class="card">
+                <div class="card-title">📅 Prochains Cours en Live</div>
+                <div class="class-item">
+                    <div class="class-time">Aujourd'hui<br>14:00</div>
+                    <div class="class-details">
+                        <div class="class-title">Mathématiques - Équations du 2nd Degré</div>
+                        <div class="class-instructor">👨‍🏫 Prof. Marie Claude</div>
+                        <div>
+                            <button class="btn btn-primary btn-small">Rejoindre Maintenant</button>
+                            <span class="badge badge-live">EN DIRECT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="class-item">
+                    <div class="class-time">Demain<br>15:30</div>
+                    <div class="class-details">
+                        <div class="class-title">Français - Analyse Littéraire</div>
+                        <div class="class-instructor">👩‍🏫 Prof. Sophie Bernard</div>
+                        <div>
+                            <button class="btn btn-secondary btn-small">Ajouter au Calendrier</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="class-item">
+                    <div class="class-time">Lundi<br>13:00</div>
+                    <div class="class-details">
+                        <div class="class-title">Physique-Chimie - Optique</div>
+                        <div class="class-instructor">👨‍🏫 Prof. Laurent Petit</div>
+                        <div>
+                            <button class="btn btn-secondary btn-small">Ajouter au Calendrier</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mes Cours -->
+            <div class="card">
+                <div class="card-title">📚 Mes Cours en Cours</div>
+                <div class="grid">
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-title">Mathématiques</div>
+                            <div class="course-instructor">👨‍🏫 Prof. Marie Claude</div>
+                        </div>
+                        <div class="course-body">
+                            <div style="margin-bottom: 1rem;">Algèbre et Géométrie</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                            <div style="margin-bottom: 1rem; font-size: 0.9rem;">75% complété • 9/12 modules</div>
+                            <button class="btn btn-primary" style="width: 100%;">Continuer</button>
+                        </div>
+                    </div>
+
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-title">Français</div>
+                            <div class="course-instructor">👩‍🏫 Prof. Sophie Bernard</div>
+                        </div>
+                        <div class="course-body">
+                            <div style="margin-bottom: 1rem;">Littérature et Grammaire</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                            <div style="margin-bottom: 1rem; font-size: 0.9rem;">60% complété • 6/10 modules</div>
+                            <button class="btn btn-primary" style="width: 100%;">Continuer</button>
+                        </div>
+                    </div>
+
+                    <div class="course-card">
+                        <div class="course-header">
+                            <div class="course-title">Sciences</div>
+                            <div class="course-instructor">👨‍🏫 Prof. Laurent Petit</div>
+                        </div>
+                        <div class="course-body">
+                            <div style="margin-bottom: 1rem;">Physique-Chimie</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%;"></div>
+                            </div>
+                            <div style="margin-bottom: 1rem; font-size: 0.9rem;">50% complété • 5/10 modules</div>
+                            <button class="btn btn-primary" style="width: 100%;">Continuer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Devoirs à Rendre -->
+            <div class="card">
+                <div class="card-title">📝 Devoirs à Rendre</div>
+                <div class="assignment-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Dissertation: "L'amitié dans la littérature"</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Français • Prof. Sophie Bernard</div>
+                        <div class="assignment-due">⏰ À rendre: Aujourd'hui 23:59</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-primary btn-small">Soumettre</button>
+                        <button class="btn btn-secondary btn-small">Voir Consignes</button>
+                    </div>
+                </div>
+                <div class="assignment-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Exercices Chapitre 5: Équations du 2nd Degré</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Mathématiques • Prof. Marie Claude</div>
+                        <div class="assignment-due pending">⏰ À rendre: Dans 3 jours</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-primary btn-small">Voir Exercices</button>
+                        <button class="btn btn-secondary btn-small">Brouillon Sauvegardé</button>
+                    </div>
+                </div>
+                <div class="assignment-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Expérience Pratique: Réfraction de la Lumière</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Sciences • Prof. Laurent Petit</div>
+                        <div style="color: #27ae60; font-weight: bold;">✓ Complété • Évaluation: 18/20</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-secondary btn-small">Voir Feedback</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Récents -->
+            <div class="card">
+                <div class="card-title">💬 Messages Récents</div>
+                <ul class="message-list">
+                    <li class="message-item">
+                        <div><span class="message-sender">👨‍🏫 Marie Claude</span> <span class="message-time">Il y a 2h</span></div>
+                        <div class="message-content">Excellent travail sur les exercices de géométrie! Continue à pratiquer les transformations.</div>
+                    </li>
+                    <li class="message-item">
+                        <div><span class="message-sender">👩‍💼 Maman</span> <span class="message-time">Hier 18:30</span></div>
+                        <div class="message-content">Joli progrès en maths cette semaine! Je suis fière de toi 😊</div>
+                    </li>
+                    <li class="message-item">
+                        <div><span class="message-sender">🤖 Système</span> <span class="message-time">Hier 15:00</span></div>
+                        <div class="message-content">Rappel: Vous avez une session de tutorat prévue demain à 16:00 avec Marie Claude</div>
+                    </li>
+                    <li class="message-item">
+                        <div><span class="message-sender">👨‍🏫 Laurent Petit</span> <span class="message-time">Il y a 2 jours</span></div>
+                        <div class="message-content">Voici les corrections de vos expériences. Consultez la vidéo explicative en rediffusion.</div>
+                    </li>
+                </ul>
+                <div style="margin-top: 1rem; text-align: center;">
+                    <button class="btn btn-secondary">Voir tous les Messages</button>
+                </div>
+            </div>
+
+            <!-- Sessions Tuteur -->
+            <div class="card">
+                <div class="card-title">🧑‍🏫 Mes Sessions Tuteur</div>
+                <div style="margin-bottom: 1rem;">
+                    <div style="padding: 1rem; background: #f0f0f0; border-radius: 5px; margin-bottom: 1rem;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Session Prévue: Demain 16:00</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Tuteur: Marie Claude | Sujet: Révision Équations</div>
+                        <button class="btn btn-primary btn-small">Rejoindre à l'heure</button>
+                        <button class="btn btn-secondary btn-small">Reprogrammer</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <div style="padding: 1rem; background: #e8f5e9; border-radius: 5px; margin-bottom: 1rem;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Session Terminée: Lundi 15:00</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Tuteur: Marie Claude | Durée: 45 minutes</div>
+                        <button class="btn btn-secondary btn-small">Revoir la Rediffusion</button>
+                        <button class="btn btn-secondary btn-small">Donner un Avis</button>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-primary">Réserver une Nouvelle Session</button>
+                </div>
+            </div>
+
+            <!-- Préparation Examen -->
+            <div class="card">
+                <div class="card-title">🎓 Préparation Bac & Brevet</div>
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div style="background: #f9f9f9; padding: 1rem; border-radius: 5px;">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">📊 Mathématiques - Bac 2025</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                        <small>65% du programme couvert</small>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-primary btn-small" style="width: 100%;">Continuer Préparation</button>
+                        </div>
+                    </div>
+                    <div style="background: #f9f9f9; padding: 1rem; border-radius: 5px;">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">📊 Français - Bac 2025</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 55%;"></div>
+                        </div>
+                        <small>55% du programme couvert</small>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-primary btn-small" style="width: 100%;">Continuer Préparation</button>
+                        </div>
+                    </div>
+                    <div style="background: #f9f9f9; padding: 1rem; border-radius: 5px;">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">📊 Sciences - Bac 2025</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%;"></div>
+                        </div>
+                        <small>45% du programme couvert</small>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-primary btn-small" style="width: 100%;">Continuer Préparation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll for sidebar links
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Add click handlers for buttons (demo purposes)
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.textContent.includes('Rejoindre')) {
+                    alert('Redirection vers la classe en direct...');
+                } else if (this.textContent.includes('Soumettre')) {
+                    alert('Ouvrir le formulaire de soumission...');
+                } else if (this.textContent.includes('Continuer')) {
+                    alert('Redirection vers le contenu du cours...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours: Mathématiques - Équations du 2nd Degré - EduHOUSE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Course Header */
+        .course-header {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .course-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .course-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .course-subtitle {
+            font-size: 1.2rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .course-instructor {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .instructor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .course-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat {
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        .course-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Course Content */
+        .course-content {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        /* Lessons */
+        .lessons-list {
+            list-style: none;
+        }
+
+        .lesson-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lesson-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .lesson-item.active {
+            background: #e8f4ff;
+            border-left-color: #2ecc71;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+
+        .lesson-meta {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .lesson-status {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-current {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-locked {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .lesson-icon {
+            margin-right: 0.5rem;
+        }
+
+        .lock-icon {
+            color: #e74c3c;
+        }
+
+        /* Video Player */
+        .video-player {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Lesson Details */
+        .lesson-details {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .lesson-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .learning-objectives {
+            margin-bottom: 1.5rem;
+        }
+
+        .learning-objectives h4 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .objectives-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #555;
+        }
+
+        .objectives-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        /* Resources */
+        .resources-section {
+            margin-bottom: 2rem;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .resource-item:hover {
+            background: #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .resource-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-name {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .resource-size {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .download-btn {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #764ba2;
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-intro {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .quiz-btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .progress-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 65%;
+            transition: width 0.3s;
+        }
+
+        .course-info {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .action-btn {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #e8f4ff;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 1rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Comments */
+        .comment-item {
+            padding: 1rem;
+            border-left: 3px solid #667eea;
+            margin-bottom: 1rem;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .comment-time {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .comment-text {
+            margin-top: 0.5rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .course-hero {
+                grid-template-columns: 1fr;
+            }
+
+            .course-image {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .course-title {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .course-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                padding: 0.8rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">🏠 EduHOUSE</div>
+            <nav>
+                <a href="dashboard.html">← Retour au Tableau de Bord</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="dashboard.html">Accueil</a> / 
+            <a href="dashboard.html">Mes Cours</a> / 
+            <span>Mathématiques: Équations du 2nd Degré</span>
+        </div>
+
+        <!-- Course Header -->
+        <div class="course-header">
+            <div class="course-hero">
+                <div>
+                    <h1 class="course-title">Équations du 2nd Degré</h1>
+                    <p class="course-subtitle">Mathématiques • 2nde A</p>
+                    <div class="course-instructor">
+                        <div class="instructor-avatar">MC</div>
+                        <div>
+                            <div style="font-weight: bold;">Prof. Marie Claude</div>
+                            <div style="font-size: 0.9rem; color: #666;">Certifiée Éducation Nationale</div>
+                        </div>
+                    </div>
+                    <p style="color: #555; line-height: 1.6; margin-top: 1rem;">
+                        Maîtrisez la résolution des équations du second degré. Ce cours couvre la factorisation, 
+                        l'utilisation du discriminant, et les applications pratiques.
+                    </p>
+                </div>
+                <div class="course-image">
+                    📐
+                </div>
+            </div>
+
+            <!-- Course Stats -->
+            <div class="course-stats">
+                <div class="stat">
+                    <div class="stat-value">9/12</div>
+                    <div class="stat-label">Modules Complétés</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">75%</div>
+                    <div class="stat-label">Progression</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">17.5/20</div>
+                    <div class="stat-label">Moyenne Actuelle</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">32h 45m</div>
+                    <div class="stat-label">Temps Passé</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Course Content -->
+            <div class="course-content">
+                <!-- Video Player -->
+                <div class="video-player">
+                    <div class="video-placeholder">
+                        <div class="play-button" onclick="alert('Lecture vidéo: Introduction aux Équations du 2nd Degré')">▶️</div>
+                        <div>Leçon en Cours</div>
+                    </div>
+                </div>
+
+                <!-- Lesson Details -->
+                <div class="lesson-details">
+                    <h3 style="margin-bottom: 0.5rem;">Module 1: Introduction aux Équations du 2nd Degré</h3>
+                    <p class="lesson-description">
+                        Une équation du second degré est une équation polynomiale de degré 2. 
+                        Elle peut être écrite sous la forme ax² + bx + c = 0 où a ≠ 0.
+                        <br><br>
+                        Dans cette leçon, nous apprendrons à identifier, classifier et résoudre 
+                        les équations du second degré en utilisant différentes méthodes.
+                    </p>
+
+                    <div class="learning-objectives">
+                        <h4>📚 Objectifs d'Apprentissage</h4>
+                        <ul class="objectives-list">
+                            <li>Identifier et classifier les équations du second degré</li>
+                            <li>Résoudre les équations par factorisation</li>
+                            <li>Utiliser la formule quadratique</li>
+                            <li>Appliquer le discriminant pour analyser les solutions</li>
+                            <li>Résoudre des problèmes pratiques utilisant des équations du 2nd degré</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div>
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('resources')">📁 Ressources</button>
+                        <button class="tab" onclick="switchTab('exercises')">✏️ Exercices</button>
+                        <button class="tab" onclick="switchTab('discussion')">💬 Discussion</button>
+                    </div>
+
+                    <!-- Resources Tab -->
+                    <div id="resources" class="tab-content active">
+                        <div class="resources-section">
+                            <h3 style="margin-bottom: 1rem;">📚 Matériel d'Apprentissage</h3>
+                            
+                            <div class="resource-item">
+                                <div class="resource-icon">📄</div>
+                                <div class="resource-info">
+                                    <div class="resource-name">Cours Complet: Équations du 2nd Degré</div>
+                                    <div class="resource-size">PDF • 2.4 MB</div>
+                                </div>
+                                <button class="download-btn">⬇️ Télécharger</button>
+                            </div>
+
+                            <div class="resource-item">
+                                <div class="resource-icon">📊</div>
+                                <div class="resource-info">
+                                    <div class="resource-name">Présentation: Méthodes de Résolution</div>
+                                    <div class="resource-size">PowerPoint • 1.8 MB</div>
+                                </div>
+                                <button class="download-btn">⬇️ Télécharger</button>
+                            </div>
+
+                            <div class="resource-item">
+                                <div class="resource-icon">📑</div>
+                                <div class="resource-info">
+                                    <div class="resource-name">Fiche Résumé: Formules Essentielles</div>
+                                    <div class="resource-size">PDF • 0.8 MB</div>
+                                </div>
+                                <button class="download-btn">⬇️ Télécharger</button>
+                            </div>
+
+                            <div class="resource-item">
+                                <div class="resource-icon">🔗</div>
+                                <div class="resource-info">
+                                    <div class="resource-name">Liens Utiles & Références Externes</div>
+                                    <div class="resource-size">Collection de 5 ressources</div>
+                                </div>
+                                <button class="download-btn">🔍 Consulter</button>
+                            </div>
+                        </div>
+
+                        <div class="resources-section">
+                            <h3 style="margin-bottom: 1rem;">🎥 Vidéos Supplémentaires</h3>
+                            
+                            <div class="resource-item">
+                                <div class="resource-icon">▶️</div>
+                                <div class="resource-info">
+                                    <div class="resource-name">Explications: Comment utiliser le discriminant</div>
+                                    <div class="resource-size">Vidéo • 12:45</div>
+                                </div>
+                                <button class="download-btn">🎬 Regarder</button>
+                            </div>
+
+                            <div class="resource-item">
+                                <div class="resource-icon">▶️</div>
+                                <div class="resource-info">
+                                    <div class="resource-name">Exemples Résolus: 5 Cas Pratiques</div>
+                                    <div class="resource-size">Vidéo • 18:30</div>
+                                </div>
+                                <button class="download-btn">🎬 Regarder</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercises Tab -->
+                    <div id="exercises" class="tab-content">
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="margin-bottom: 1rem;">✏️ Exercices Pratiques</h3>
+                            
+                            <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="margin-bottom: 0.5rem;">📝 Exercice 1: Identification</h4>
+                                <p style="color: #666; margin-bottom: 1rem;">
+                                    Identifiez si les équations suivantes sont du second degré et précisez les valeurs de a, b, c.
+                                </p>
+                                <button class="quiz-btn" onclick="alert('Redirection vers l\'exercice interactif...')">
+                                    Commencer l'Exercice
+                                </button>
+                                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">
+                                    Votre réponse: ⏳ Pas encore répondu
+                                </div>
+                            </div>
+
+                            <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="margin-bottom: 0.5rem;">📝 Exercice 2: Résolution par Factorisation</h4>
+                                <p style="color: #666; margin-bottom: 1rem;">
+                                    Résolvez les équations suivantes par factorisation: x² - 5x + 6 = 0
+                                </p>
+                                <button class="quiz-btn" onclick="alert('Redirection vers l\'exercice interactif...')">
+                                    Commencer l'Exercice
+                                </button>
+                                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #27ae60;">
+                                    ✓ Complété • Note: 18/20
+                                </div>
+                            </div>
+
+                            <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="margin-bottom: 0.5rem;">📝 Exercice 3: Utilisation du Discriminant</h4>
+                                <p style="color: #666; margin-bottom: 1rem;">
+                                    Analysez les solutions de l'équation en calculant le discriminant.
+                                </p>
+                                <button class="quiz-btn" onclick="alert('Redirection vers l\'exercice interactif...')">
+                                    Commencer l'Exercice
+                                </button>
+                                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">
+                                    Votre réponse: ⏳ En cours...
+                                </div>
+                            </div>
+
+                            <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px;">
+                                <h4 style="margin-bottom: 0.5rem;">📝 Exercice 4: Problèmes Pratiques</h4>
+                                <p style="color: #666; margin-bottom: 1rem;">
+                                    Résolvez des problèmes réels utilisant des équations du second degré.
+                                </p>
+                                <button class="quiz-btn" onclick="alert('Redirection vers l\'exercice interactif...')">
+                                    Commencer l'Exercice
+                                </button>
+                                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: #f39c12;">
+                                    Votre réponse: ⏳ Non commencé
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quiz -->
+                        <div class="quiz-section">
+                            <h3 style="margin-bottom: 1rem;">🧪 Quiz du Module</h3>
+                            <p class="quiz-intro">
+                                Testez votre compréhension avec ce quiz interactif de 10 questions. 
+                                Vous devez obtenir au moins 70% pour réussir.
+                            </p>
+                            <button class="quiz-btn" onclick="alert('Redirection vers le quiz...')">
+                                Passer le Quiz (10 questions)
+                            </button>
+                            <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 5px;">
+                                <div style="font-size: 0.9rem; color: #666;">
+                                    <strong>Dernier Résultat:</strong> 16/20 (80%) • 
+                                    <span style="color: #2ecc71;">✓ Réussi</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discussion Tab -->
+                    <div id="discussion" class="tab-content">
+                        <h3 style="margin-bottom: 1.5rem;">💬 Discussion avec le Tuteur</h3>
+                        
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; max-height: 400px; overflow-y: auto;">
+                            <div class="comment-item">
+                                <div class="comment-author">👨‍🏫 Prof. Marie Claude</div>
+                                <div class="comment-time">Il y a 2 jours</div>
+                                <div class="comment-text">
+                                    Excellentes questions en classe aujourd'hui! N'hésitez pas à revenir sur la partie 
+                                    concernant le discriminant si vous avez besoin de clarifications.
+                                </div>
+                            </div>
+
+                            <div class="comment-item">
+                                <div class="comment-author">👤 Vous</div>
+                                <div class="comment-time">Hier 15:30</div>
+                                <div class="comment-text">
+                                    Merci prof! Pouvez-vous expliquer comment on sait si une équation a 2 solutions, 1 ou 0?
+                                </div>
+                            </div>
+
+                            <div class="comment-item">
+                                <div class="comment-author">👨‍🏫 Prof. Marie Claude</div>
+                                <div class="comment-time">Hier 16:00</div>
+                                <div class="comment-text">
+                                    Bonne question! C'est exactement à quoi sert le discriminant Δ = b² - 4ac:
+                                    <br>• Si Δ > 0: 2 solutions distinctes
+                                    <br>• Si Δ = 0: 1 solution (racine double)
+                                    <br>• Si Δ < 0: Pas de solution réelle
+                                    <br><br>Regarde la vidéo supplémentaire pour plus de détails.
+                                </div>
+                            </div>
+
+                            <div class="comment-item">
+                                <div class="comment-author">👤 Vous</div>
+                                <div class="comment-time">Aujourd'hui 10:15</div>
+                                <div class="comment-text">
+                                    Ah d'accord! C'est beaucoup plus clair maintenant. Merci pour votre aide! 😊
+                                </div>
+                            </div>
+                        </div>
+
+                        <form onsubmit="handleComment(event)" style="margin-top: 1.5rem;">
+                            <div style="margin-bottom: 1rem;">
+                                <textarea placeholder="Posez votre question ou commentaire..." 
+                                    style="width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; 
+                                    font-family: inherit; resize: vertical; min-height: 100px;"></textarea>
+                            </div>
+                            <button type="submit" class="quiz-btn">Envoyer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-title">📊 Progression</div>
+
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>Modules Complétés</span>
+                        <span>75%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;"></div>
+                    </div>
+                </div>
+
+                <div class="course-info">
+                    <div class="info-item">
+                        <span class="info-label">📚 Modules</span>
+                        <span class="info-value">12</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">✏️ Exercices</span>
+                        <span class="info-value">28</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🧪 Quizzes</span>
+                        <span class="info-value">4</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⏱️ Durée Totale</span>
+                        <span class="info-value">45h</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">📈 Votre Moyenne</span>
+                        <span class="info-value" style="color: #27ae60;">17.5/20</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="action-btn btn-primary" onclick="alert('Réservation session tuteur...')">
+                        🧑‍🏫 Réserver Tuteur
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="alert('Téléchargement du certificat...')">
+                        📜 Télécharger Certificat
+                    </button>
+                    <button class="action-btn btn-secondary" onclick="alert('Redirection vers le forum...')">
+                        💬 Rejoindre le Forum
+                    </button>
+                </div>
+
+                <div class="sidebar-title" style="margin-top: 2rem;">📖 Modules du Cours</div>
+                
+                <ul class="lessons-list">
+                    <li class="lesson-item active">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Module 1: Introduction</div>
+                            <div class="lesson-meta">🎥 16 min | ✏️ 3 exercices</div>
+                        </div>
+                        <div class="lesson-status">
+                            <span class="badge badge-current">EN COURS</span>
+                        </div>
+                    </li>
+
+                    <li class="lesson-item">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Module 2: Factorisation</div>
+                            <div class="lesson-meta">🎥 22 min | ✏️ 5 exercices</div>
+                        </div>
+                        <div class="lesson-status">
+                            <span class="badge badge-completed">✓ COMPLÉTÉ</span>
+                        </div>
+                    </li>
+
+                    <li class="lesson-item">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Module 3: Formule Quadratique</div>
+                            <div class="lesson-meta">🎥 18 min | ✏️ 4 exercices</div>
+                        </div>
+                        <div class="lesson-status">
+                            <span class="badge badge-completed">✓ COMPLÉTÉ</span>
+                        </div>
+                    </li>
+
+                    <li class="lesson-item">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Module 4: Le Discriminant</div>
+                            <div class="lesson-meta">🎥 14 min | ✏️ 3 exercices</div>
+                        </div>
+                        <div class="lesson-status">
+                            <span class="badge badge-completed">✓ COMPLÉTÉ</span>
+                        </div>
+                    </li>
+
+                    <li class="lesson-item">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Module 5: Applications Pratiques</div>
+                            <div class="lesson-meta">🎥 20 min | ✏️ 6 exercices</div>
+                        </div>
+                        <div class="lesson-status">
+                            <span class="badge badge-locked">🔒 VERROUILLÉ</span>
+                        </div>
+                    </li>
+
+                    <li class="lesson-item">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Module 6: Examen Final</div>
+                            <div class="lesson-meta">🧪 45 min | 20 questions</div>
+                        </div>
+                        <div class="lesson-status">
+                            <span class="badge badge-locked">🔒 VERROUILLÉ</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const contents = document.getElementsByClassName('tab-content');
+            for (let content of contents) {
+                content.classList.remove('active');
+            }
+
+            // Remove active class from all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let tab of tabs) {
+                tab.classList.remove('active');
+            }
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function handleComment(event) {
+            event.preventDefault();
+            alert('Votre commentaire a été envoyé au tuteur! (Mode démo)');
+            event.target.reset();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Enseignant - EduHOUSE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-logout {
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-left h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .header-left small {
+            color: #666;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 2px solid #2ecc71;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 4px solid #2ecc71;
+        }
+
+        .stat-card.blue {
+            border-left-color: #3498db;
+        }
+
+        .stat-card.orange {
+            border-left-color: #f39c12;
+        }
+
+        .stat-card.red {
+            border-left-color: #e74c3c;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .stat-card.blue .stat-value {
+            color: #3498db;
+        }
+
+        .stat-card.orange .stat-value {
+            color: #f39c12;
+        }
+
+        .stat-card.red .stat-value {
+            color: #e74c3c;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #2ecc71;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Course Management Card */
+        .course-management-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .course-management-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .course-header {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .course-body {
+            padding: 1.5rem;
+        }
+
+        .course-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-students {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        /* Student List */
+        .student-list {
+            list-style: none;
+        }
+
+        .student-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .student-status {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .student-progress {
+            width: 100px;
+            text-align: right;
+        }
+
+        .progress-indicator {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .progress-indicator.excellent {
+            color: #27ae60;
+        }
+
+        .progress-indicator.good {
+            color: #2ecc71;
+        }
+
+        .progress-indicator.warning {
+            color: #f39c12;
+        }
+
+        .progress-indicator.danger {
+            color: #e74c3c;
+        }
+
+        /* Class Schedule */
+        .class-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .class-item:last-child {
+            border-bottom: none;
+        }
+
+        .class-time {
+            background: #2ecc71;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            width: 120px;
+            text-align: center;
+            margin-right: 1rem;
+        }
+
+        .class-details {
+            flex: 1;
+        }
+
+        .class-title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .class-count {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Assignment Grading */
+        .assignment-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .assignment-item:last-child {
+            border-bottom: none;
+        }
+
+        .assignment-pending {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-live {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge-upcoming {
+            background: #f39c12;
+            color: white;
+        }
+
+        .badge-completed {
+            background: #27ae60;
+            color: white;
+        }
+
+        /* Attendance Table */
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .attendance-table th,
+        .attendance-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .attendance-table th {
+            background-color: #f9f9f9;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .attendance-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .attendance-present {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .attendance-absent {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .attendance-late {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 1rem;
+            }
+
+            .grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .user-info {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .student-item {
+                flex-wrap: wrap;
+            }
+
+            .class-time {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .attendance-table {
+                font-size: 0.85rem;
+            }
+
+            .attendance-table th,
+            .attendance-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">🏠 EduHOUSE</div>
+            <ul>
+                <li><a href="#dashboard" class="active">📊 Tableau de Bord</a></li>
+                <li><a href="#courses">📚 Mes Cours</a></li>
+                <li><a href="#classes">🎥 Mes Classes</a></li>
+                <li><a href="#students">👥 Mes Élèves</a></li>
+                <li><a href="#assignments">📝 Devoirs & Évaluations</a></li>
+                <li><a href="#messages">💬 Messages</a></li>
+                <li><a href="#attendance">📋 Présences</a></li>
+                <li><a href="#reports">📈 Rapports</a></li>
+                <li><a href="#settings">⚙️ Paramètres</a></li>
+            </ul>
+            <div class="sidebar-logout">
+                <a href="index.html" style="text-align: center;">← Déconnexion</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div class="header-left">
+                    <h1>Bienvenue, Prof! 👨‍🏫</h1>
+                    <small>École | Dernière connexion: Aujourd'hui 09:00</small>
+                </div>
+                <div class="user-info">
+                    <div style="text-align: right;">
+                        <div><strong>Marie Claude</strong></div>
+                        <div style="font-size: 0.9rem; color: #666;">Certifiée Éducation Nationale</div>
+                    </div>
+                    <div class="user-avatar">MC</div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">85</div>
+                    <div class="stat-label">Élèves Actifs</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Cours Planifiés</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">Devoirs à Corriger</div>
+                </div>
+                <div class="stat-card red">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Sessions Prévues</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-title">⚡ Actions Rapides</div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="openCreateClassModal()">➕ Créer un Cours</button>
+                    <button class="btn btn-primary" onclick="openScheduleClassModal()">📅 Planifier une Classe</button>
+                    <button class="btn btn-secondary" onclick="openGradeModal()">✏️ Corriger des Devoirs</button>
+                    <button class="btn btn-secondary" onclick="openMessageModal()">💬 Envoyer un Message</button>
+                    <button class="btn btn-secondary">📊 Générer un Rapport</button>
+                </div>
+            </div>
+
+            <!-- Cours en Cours -->
+            <div class="card">
+                <div class="card-title">📚 Mes Cours Actifs</div>
+                <div class="grid">
+                    <div class="course-management-card">
+                        <div class="course-header">
+                            <div class="course-title">Mathématiques 2nde A</div>
+                            <div class="course-students">👥 32 élèves</div>
+                        </div>
+                        <div class="course-body">
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Prochain cours:</strong> Aujourd'hui 14:00<br>
+                                <small>Thème: Équations du 2nd Degré</small>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary btn-small" style="flex: 1;">Démarrer Classe</button>
+                                <button class="btn btn-secondary btn-small" style="flex: 1;">Gérer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="course-management-card">
+                        <div class="course-header">
+                            <div class="course-title">Mathématiques 1ère S</div>
+                            <div class="course-students">👥 28 élèves</div>
+                        </div>
+                        <div class="course-body">
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Prochain cours:</strong> Demain 15:30<br>
+                                <small>Thème: Analyse et Dérivées</small>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary btn-small" style="flex: 1;">Démarrer Classe</button>
+                                <button class="btn btn-secondary btn-small" style="flex: 1;">Gérer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="course-management-card">
+                        <div class="course-header">
+                            <div class="course-title">Mathématiques Terminale</div>
+                            <div class="course-students">👥 25 élèves</div>
+                        </div>
+                        <div class="course-body">
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Prochain cours:</strong> Lundi 10:00<br>
+                                <small>Thème: Probabilités & Statistiques</small>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary btn-small" style="flex: 1;">Démarrer Classe</button>
+                                <button class="btn btn-secondary btn-small" style="flex: 1;">Gérer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prochains Cours en Live -->
+            <div class="card">
+                <div class="card-title">🎥 Horaire de la Journée</div>
+                <div class="class-item">
+                    <div class="class-time">Aujourd'hui<br>14:00</div>
+                    <div class="class-details">
+                        <div class="class-title">Mathématiques 2nde A - Équations</div>
+                        <div class="class-count">👥 32 élèves • ⏱️ 60 minutes</div>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge badge-live">EN DIRECT</span>
+                            <button class="btn btn-primary btn-small">Rejoindre la Classe</button>
+                            <button class="btn btn-secondary btn-small">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="class-item">
+                    <div class="class-time">Demain<br>15:30</div>
+                    <div class="class-details">
+                        <div class="class-title">Mathématiques 1ère S - Dérivées</div>
+                        <div class="class-count">👥 28 élèves • ⏱️ 60 minutes</div>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge badge-upcoming">PRÉVU</span>
+                            <button class="btn btn-secondary btn-small">Modifier</button>
+                            <button class="btn btn-secondary btn-small">Voir les Notes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="class-item">
+                    <div class="class-time">Lundi<br>10:00</div>
+                    <div class="class-details">
+                        <div class="class-title">Mathématiques Terminale - Probabilités</div>
+                        <div class="class-count">👥 25 élèves • ⏱️ 90 minutes</div>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="badge badge-upcoming">PRÉVU</span>
+                            <button class="btn btn-secondary btn-small">Modifier</button>
+                            <button class="btn btn-secondary btn-small">Voir les Notes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Devoirs à Corriger -->
+            <div class="card">
+                <div class="card-title">📝 Devoirs à Corriger</div>
+                <div class="assignment-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Exercices Chapitre 5 - 2nde A</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">18 soumissions • 5 en attente de révision</div>
+                        <div class="assignment-pending">⏰ Soumises depuis: 2 jours</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-primary btn-small" onclick="openGradeModal()">Corriger</button>
+                        <button class="btn btn-secondary btn-small">Détails</button>
+                    </div>
+                </div>
+                <div class="assignment-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Dissertation - 1ère S</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">12 soumissions • 2 en attente de révision</div>
+                        <div style="color: #27ae60; font-weight: bold;">✓ 10 déjà notées</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-primary btn-small">Corriger Restants</button>
+                        <button class="btn btn-secondary btn-small">Détails</button>
+                    </div>
+                </div>
+                <div class="assignment-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 0.3rem;">Projet de Recherche - Terminale</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">15 soumissions • Tous en attente</div>
+                        <div class="assignment-pending">⏰ À corriger immédiatement</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <button class="btn btn-primary btn-small">Corriger</button>
+                        <button class="btn btn-secondary btn-small">Détails</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestion Élèves - Top Performers & Struggles -->
+            <div class="card">
+                <div class="card-title">👥 Performance des Élèves</div>
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <div style="background: #f9f9f9; padding: 1rem; border-radius: 5px;">
+                        <div style="font-weight: bold; margin-bottom: 1rem; color: #27ae60;">⭐ Meilleure Performance</div>
+                        <ul class="student-list">
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">Emma Rousseau</div>
+                                    <div class="student-status">2nde A</div>
+                                </div>
+                                <div class="student-progress">
+                                    <div class="progress-indicator excellent">18.5/20</div>
+                                </div>
+                            </li>
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">Lucas Dupont</div>
+                                    <div class="student-status">1ère S</div>
+                                </div>
+                                <div class="student-progress">
+                                    <div class="progress-indicator excellent">17.8/20</div>
+                                </div>
+                            </li>
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">Sophie Martin</div>
+                                    <div class="student-status">Terminale</div>
+                                </div>
+                                <div class="student-progress">
+                                    <div class="progress-indicator excellent">17.2/20</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fff5f5; padding: 1rem; border-radius: 5px;">
+                        <div style="font-weight: bold; margin-bottom: 1rem; color: #e74c3c;">⚠️ Besoin de Support</div>
+                        <ul class="student-list">
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">Julien Leclerc</div>
+                                    <div class="student-status">2nde A</div>
+                                </div>
+                                <div class="student-progress">
+                                    <div class="progress-indicator danger">9.2/20</div>
+                                </div>
+                            </li>
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">Amélie Besson</div>
+                                    <div class="student-status">1ère S</div>
+                                </div>
+                                <div class="student-progress">
+                                    <div class="progress-indicator danger">8.5/20</div>
+                                </div>
+                            </li>
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">Thomas Girard</div>
+                                    <div class="student-status">Terminale</div>
+                                </div>
+                                <div class="student-progress">
+                                    <div class="progress-indicator warning">10.8/20</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Présences -->
+            <div class="card">
+                <div class="card-title">📋 Présences - Dernière Classe</div>
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Élève</th>
+                            <th>Statut</th>
+                            <th>Heure d'Arrivée</th>
+                            <th>Heure de Départ</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Emma Rousseau</td>
+                            <td><span class="attendance-present">✓ Présent</span></td>
+                            <td>14:00</td>
+                            <td>15:00</td>
+                            <td><button class="btn btn-secondary btn-small">Détails</button></td>
+                        </tr>
+                        <tr>
+                            <td>Lucas Dupont</td>
+                            <td><span class="attendance-present">✓ Présent</span></td>
+                            <td>14:00</td>
+                            <td>15:00</td>
+                            <td><button class="btn btn-secondary btn-small">Détails</button></td>
+                        </tr>
+                        <tr>
+                            <td>Julien Leclerc</td>
+                            <td><span class="attendance-late">⏱️ Retard</span></td>
+                            <td>14:15</td>
+                            <td>15:00</td>
+                            <td><button class="btn btn-secondary btn-small">Détails</button></td>
+                        </tr>
+                        <tr>
+                            <td>Sophie Martin</td>
+                            <td><span class="attendance-present">✓ Présent</span></td>
+                            <td>14:00</td>
+                            <td>14:45</td>
+                            <td><button class="btn btn-secondary btn-small">Détails</button></td>
+                        </tr>
+                        <tr>
+                            <td>Amélie Besson</td>
+                            <td><span class="attendance-absent">✗ Absent</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td><button class="btn btn-secondary btn-small">Justifier</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Messages Récents -->
+            <div class="card">
+                <div class="card-title">💬 Messages Récents</div>
+                <ul style="list-style: none;">
+                    <li style="padding: 1rem 0; border-bottom: 1px solid #eee;">
+                        <div><strong>👩‍💼 Directrice</strong> <small style="color: #999;">Il y a 1h</small></div>
+                        <div style="margin-top: 0.5rem; color: #555;">Rappel: Mise à jour des bulletins avant vendredi.</div>
+                    </li>
+                    <li style="padding: 1rem 0; border-bottom: 1px solid #eee;">
+                        <div><strong>👨‍💻 Support EduHOUSE</strong> <small style="color: #999;">Hier 15:30</small></div>
+                        <div style="margin-top: 0.5rem; color: #555;">Nouvelle fonctionnalité disponible: Export des Notes.</div>
+                    </li>
+                    <li style="padding: 1rem 0;">
+                        <div><strong>👨‍🎓 Jean Dupont (Parent)</strong> <small style="color: #999;">Hier 10:00</small></div>
+                        <div style="margin-top: 0.5rem; color: #555;">Question sur les devoirs de mathématiques.</div>
+                    </li>
+                </ul>
+                <div style="margin-top: 1rem; text-align: center;">
+                    <button class="btn btn-secondary">Voir tous les Messages</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal: Create Class -->
+    <div id="createClassModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateClassModal()">&times;</span>
+            <h2>Créer un Nouveau Cours</h2>
+            <form onsubmit="handleCreateClass(event)">
+                <div class="form-group">
+                    <label for="class-name">Nom du Cours</label>
+                    <input type="text" id="class-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="class-level">Niveau</label>
+                    <select id="class-level" required>
+                        <option value="">Sélectionner un niveau</option>
+                        <option value="2nde">2nde</option>
+                        <option value="1s">1ère S</option>
+                        <option value="term">Terminale</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="class-description">Description</label>
+                    <textarea id="class-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="class-capacity">Nombre Maximum d'Élèves</label>
+                    <input type="number" id="class-capacity" value="30" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Créer le Cours</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Schedule Class -->
+    <div id="scheduleClassModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeScheduleClassModal()">&times;</span>
+            <h2>Planifier une Classe</h2>
+            <form onsubmit="handleScheduleClass(event)">
+                <div class="form-group">
+                    <label for="schedule-course">Cours</label>
+                    <select id="schedule-course" required>
+                        <option value="">Sélectionner un cours</option>
+                        <option value="math2">Mathématiques 2nde A</option>
+                        <option value="math1">Mathématiques 1ère S</option>
+                        <option value="matht">Mathématiques Terminale</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-date">Date</label>
+                    <input type="date" id="schedule-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-time">Heure</label>
+                    <input type="time" id="schedule-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-duration">Durée (en minutes)</label>
+                    <input type="number" id="schedule-duration" value="60" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-topic">Sujet du Cours</label>
+                    <input type="text" id="schedule-topic" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Planifier</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Grade Assignment -->
+    <div id="gradeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeGradeModal()">&times;</span>
+            <h2>Corriger un Devoir</h2>
+            <form onsubmit="handleGradeSubmission(event)">
+                <div class="form-group">
+                    <label for="grade-student">Élève</label>
+                    <select id="grade-student" required>
+                        <option value="">Sélectionner un élève</option>
+                        <option value="emma">Emma Rousseau</option>
+                        <option value="lucas">Lucas Dupont</option>
+                        <option value="julien">Julien Leclerc</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="grade-score">Note (/20)</label>
+                    <input type="number" id="grade-score" min="0" max="20" step="0.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="grade-feedback">Commentaire</label>
+                    <textarea id="grade-feedback" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Soumettre la Note</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Send Message -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMessageModal()">&times;</span>
+            <h2>Envoyer un Message</h2>
+            <form onsubmit="handleSendMessage(event)">
+                <div class="form-group">
+                    <label for="message-to">Destinataire</label>
+                    <select id="message-to" required>
+                        <option value="">Sélectionner un destinataire</option>
+                        <option value="all">Tous les élèves (2nde A)</option>
+                        <option value="emma">Emma Rousseau</option>
+                        <option value="lucas">Lucas Dupont</option>
+                        <option value="julien">Julien Leclerc</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message-subject">Sujet</label>
+                    <input type="text" id="message-subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="message-content">Message</label>
+                    <textarea id="message-content" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal Functions
+        function openCreateClassModal() {
+            document.getElementById('createClassModal').style.display = 'block';
+        }
+
+        function closeCreateClassModal() {
+            document.getElementById('createClassModal').style.display = 'none';
+        }
+
+        function openScheduleClassModal() {
+            document.getElementById('scheduleClassModal').style.display = 'block';
+        }
+
+        function closeScheduleClassModal() {
+            document.getElementById('scheduleClassModal').style.display = 'none';
+        }
+
+        function openGradeModal() {
+            document.getElementById('gradeModal').style.display = 'block';
+        }
+
+        function closeGradeModal() {
+            document.getElementById('gradeModal').style.display = 'none';
+        }
+
+        function openMessageModal() {
+            document.getElementById('messageModal').style.display = 'block';
+        }
+
+        function closeMessageModal() {
+            document.getElementById('messageModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            let modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        // Form Handlers
+        function handleCreateClass(event) {
+            event.preventDefault();
+            alert('Cours créé avec succès! (Mode démo)');
+            closeCreateClassModal();
+        }
+
+        function handleScheduleClass(event) {
+            event.preventDefault();
+            alert('Classe planifiée avec succès! (Mode démo)');
+            closeScheduleClassModal();
+        }
+
+        function handleGradeSubmission(event) {
+            event.preventDefault();
+            alert('Note soumise avec succès! (Mode démo)');
+            closeGradeModal();
+        }
+
+        function handleSendMessage(event) {
+            event.preventDefault();
+            alert('Message envoyé! (Mode démo)');
+            closeMessageModal();
+        }
+
+        // Sidebar Navigation
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

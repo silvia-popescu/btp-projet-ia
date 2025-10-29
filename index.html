@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduHOUSE - Plateforme d'Éducation Moderne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #667eea;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-primary:hover {
+            background-color: white;
+            color: #667eea;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #667eea;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6rem 1rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        /* Section */
+        section {
+            padding: 4rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #333;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background-color: #f5f5f5;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-card li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pricing-card li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">🏠 EduHOUSE</div>
+            <ul>
+                <li><a href="#features">Nos Offres</a></li>
+                <li><a href="#about">À Propos</a></li>
+                <li><a href="#pricing">Tarifs</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-primary" onclick="openLoginModal()">Connexion</button>
+                <button class="btn btn-secondary" onclick="openSignupModal()">S'inscrire</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Bienvenue à EduHOUSE</h1>
+            <p>La plateforme d'éducation moderne qui rend l'apprentissage interactif, humain et efficace</p>
+            <div class="hero-buttons">
+                <button class="btn btn-secondary" onclick="openSignupModal()">Commencer Gratuitement</button>
+                <button class="btn btn-primary" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">Découvrir Plus</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>Ce que nous offrons</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Cours en Live</h3>
+                <p>Suivez le programme officiel avec les meilleurs enseignants certifiés de l'Éducation nationale</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎥</div>
+                <h3>Rediffusions Illimitées</h3>
+                <p>Révisez à votre rythme, quand vous voulez. Accès complet à tous les cours enregistrés</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧑‍🏫</div>
+                <h3>Tuteur Personnel</h3>
+                <p>Un enseignant dédié qui répond à vos questions et corrige vos devoirs</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3>Préparation Bac & Brevet</h3>
+                <p>Des parcours spéciaux pour réussir les examens officiels</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Espace Personnel</h3>
+                <p>Communication directe entre tuteur, élève et parents</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Suivi Personnalisé</h3>
+                <p>Progression adaptée au rythme de chaque élève avec rapports détaillés</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">Notre Mission</h2>
+            <p style="text-align: center; font-size: 1.1rem; color: #555; max-width: 800px; margin: 0 auto;">
+                <strong>Rendre chaque élève capable de comprendre et d'aimer apprendre.</strong>
+            </p>
+            <p style="text-align: center; margin-top: 2rem; color: #666;">
+                EduHOUSE combine la rigueur du programme officiel avec la flexibilité moderne. 
+                Nos élèves progressent à leur rythme, avec un suivi humain authentique, tout en respectant les standards académiques.
+                Les parents retrouvent la sérénité de savoir que leur enfant comprend enfin ses cours, 
+                prend confiance et améliore ses résultats.
+            </p>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Nos Tarifs</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Essai Gratuit</h3>
+                    <div class="price">0€</div>
+                    <ul>
+                        <li>2 cours en live</li>
+                        <li>Accès aux rediffusions</li>
+                        <li>Chat de base</li>
+                        <li>Durée: 7 jours</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="openSignupModal()">Commencer</button>
+                </div>
+                <div class="pricing-card">
+                    <h3>Plan Étudiant</h3>
+                    <div class="price">29€<span style="font-size: 1rem;">/mois</span></div>
+                    <ul>
+                        <li>Cours en live illimités</li>
+                        <li>Rediffusions complètes</li>
+                        <li>Support tuteur (5h/mois)</li>
+                        <li>Espace personnel</li>
+                        <li>Annulation flexible</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="openSignupModal()">S'abonner</button>
+                </div>
+                <div class="pricing-card">
+                    <h3>Plan Premium</h3>
+                    <div class="price">79€<span style="font-size: 1rem;">/mois</span></div>
+                    <ul>
+                        <li>Tous les cours en live</li>
+                        <li>Tuteur personnel dédié</li>
+                        <li>Support illimité</li>
+                        <li>Préparation Bac/Brevet</li>
+                        <li>Correction de devoirs</li>
+                        <li>Priorité support</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="openSignupModal()">S'abonner</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="contact">
+        <div class="container">
+            <h2>Prêt à transformer votre apprentissage ?</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">Rejoignez des milliers d'élèves qui réussissent avec EduHOUSE</p>
+            <button class="btn btn-secondary" onclick="openSignupModal()">Créer un Compte Gratuit</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 EduHOUSE. Tous droits réservés.</p>
+        <p>
+            <a href="#" style="color: #667eea; margin: 0 1rem;">Conditions d'utilisation</a>
+            <a href="#" style="color: #667eea; margin: 0 1rem;">Politique de confidentialité</a>
+            <a href="#" style="color: #667eea; margin: 0 1rem;">Contact</a>
+        </p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Connexion</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSignupModal()">&times;</span>
+            <h2>S'inscrire</h2>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="signup-name">Nom complet</label>
+                    <input type="text" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-role">Je suis</label>
+                    <select id="signup-role" style="width: 100%; padding: 0.7rem; border: 1px solid #ddd; border-radius: 5px;" required>
+                        <option value="student">Élève</option>
+                        <option value="parent">Parent</option>
+                        <option value="teacher">Enseignant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Mot de passe</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Créer un compte</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function openSignupModal() {
+            document.getElementById('signupModal').style.display = 'block';
+        }
+
+        function closeSignupModal() {
+            document.getElementById('signupModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            let loginModal = document.getElementById('loginModal');
+            let signupModal = document.getElementById('signupModal');
+            if (event.target == loginModal) {
+                loginModal.style.display = 'none';
+            }
+            if (event.target == signupModal) {
+                signupModal.style.display = 'none';
+            }
+        }
+
+        // Form handlers
+        function handleLogin(event) {
+            event.preventDefault();
+            alert('Connexion successful! (Demo mode)\nIn production, this would connect to backend.');
+            closeLoginModal();
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            alert('Inscription réussie! (Mode démo)\nVérifiez votre email pour confirmer votre compte.');
+            closeSignupModal();
+        }
+    </script>
+</body>
+</html>

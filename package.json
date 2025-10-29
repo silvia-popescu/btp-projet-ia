@@ -1,0 +1,37 @@
+{
+  "name": "eduhouse",
+  "version": "1.0.0",
+  "description": "🏠 EduHOUSE - Modern Online Education Platform for French Education System",
+  "author": "EduHOUSE Team",
+  "license": "MIT",
+  "homepage": "https://github.com/samet/btp-projet-ia#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samet/btp-projet-ia.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samet/btp-projet-ia/issues"
+  },
+  "keywords": [
+    "education",
+    "online-learning",
+    "courses",
+    "tutoring",
+    "elearning",
+    "french-education",
+    "interactive-platform"
+  ],
+  "private": false,
+  "scripts": {
+    "dev": "http-server -p 8000 -o",
+    "start": "http-server -p 8000",
+    "build": "echo 'Frontend-only project, no build needed'",
+    "test": "echo 'Add tests here'",
+    "serve": "python -m http.server 8000"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
