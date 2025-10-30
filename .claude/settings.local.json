@@ -7,7 +7,9 @@
       "Bash(npm install:*)",
       "Bash(npm start)",
       "Bash(curl:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd authentication system, user dashboard, blue color scheme, and animated logo\n\nThis commit implements the complete EduHOUSE platform overhaul with:\n\nFeatures:\n- JWT-based authentication system with email/password login on landing page\n- User authentication with compound password security (firstName + password)\n- SQLite database for user management\n- User dashboard displaying logged-in user information (name, email, avatar)\n- Logout functionality with session management\n- Unified blue color scheme across all pages (#1E3A8A to #2563EB gradient)\n- Professional animated logo with multiple simultaneous animations\n- Logo displays on both landing page (65px) and dashboard (60px)\n\nBackend:\n- Express.js server with CORS and JWT middleware\n- RESTful API endpoints for login, registration, user retrieval\n- SQLite3 in-memory database with pre-seeded demo users\n- Password hashing with bcryptjs\n- JWT tokens with 24-hour expiration\n\nFrontend:\n- Index.html: Login/signup modals connected to backend API\n- Dashboard.html: User info display, authentication check, logout button\n- Logo.svg: Large (400x400 viewBox) bold animated SVG with 7 simultaneous animations\n- Responsive design with hover effects and drop shadows\n\nDocumentation:\n- AUTHENTICATION.md: Complete API documentation and security explanation\n- DASHBOARD_USER_INFO.md: User information flow and authentication details\n- LOGO_DESIGN.md: Static logo design documentation\n- ANIMATED_LOGO.md: Comprehensive animated logo feature documentation\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
