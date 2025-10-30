@@ -19,7 +19,7 @@
 
         /* Header */
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
             color: white;
             padding: 1rem 0;
             position: sticky;
@@ -40,6 +40,20 @@
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-img {
+            width: 65px;
+            height: 65px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.1);
         }
 
         nav ul {
@@ -75,19 +89,19 @@
         }
 
         .btn-primary {
-            background-color: #667eea;
+            background-color: #2563EB;
             color: white;
             border: 2px solid white;
         }
 
         .btn-primary:hover {
             background-color: white;
-            color: #667eea;
+            color: #2563EB;
         }
 
         .btn-secondary {
             background-color: white;
-            color: #667eea;
+            color: #2563EB;
         }
 
         .btn-secondary:hover {
@@ -96,7 +110,7 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
             color: white;
             padding: 6rem 1rem;
             text-align: center;
@@ -152,7 +166,7 @@
             border-radius: 10px;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #2563EB;
         }
 
         .feature-card:hover {
@@ -167,7 +181,7 @@
 
         .feature-card h3 {
             margin-bottom: 1rem;
-            color: #667eea;
+            color: #2563EB;
         }
 
         /* Section */
@@ -214,12 +228,12 @@
         .pricing-card h3 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: #667eea;
+            color: #2563EB;
         }
 
         .price {
             font-size: 2.5rem;
-            color: #667eea;
+            color: #2563EB;
             font-weight: bold;
             margin-bottom: 1rem;
         }
@@ -236,14 +250,14 @@
 
         .pricing-card li:before {
             content: "✓ ";
-            color: #667eea;
+            color: #2563EB;
             font-weight: bold;
             margin-right: 0.5rem;
         }
 
         /* CTA Section */
         .cta {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
             color: white;
             text-align: center;
             padding: 4rem 1rem;
@@ -343,16 +357,23 @@
     <!-- Header -->
     <header>
         <nav>
-            <div class="logo">🏠 EduHOUSE</div>
+            <div class="logo">
+                <img src="logo.svg" alt="EduHOUSE Logo" class="logo-img">
+                <span>EduHOUSE</span>
+            </div>
             <ul>
                 <li><a href="#features">Nos Offres</a></li>
                 <li><a href="#about">À Propos</a></li>
                 <li><a href="#pricing">Tarifs</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <div class="auth-buttons">
+            <div class="auth-buttons" id="auth-buttons">
                 <button class="btn btn-primary" onclick="openLoginModal()">Connexion</button>
                 <button class="btn btn-secondary" onclick="openSignupModal()">S'inscrire</button>
+            </div>
+            <div class="user-info" id="user-info" style="display: none; color: white; display: flex; align-items: center; gap: 1rem;">
+                <span id="user-name">Bienvenue, </span>
+                <button class="btn btn-primary" onclick="logout()" style="padding: 0.5rem 1rem;">Déconnexion</button>
             </div>
         </nav>
     </header>
@@ -499,6 +520,9 @@
                 <div class="form-group">
                     <label for="login-password">Mot de passe</label>
                     <input type="password" id="login-password" required>
+                    <small style="color: #666; margin-top: 0.3rem; display: block;">
+                        Note: Le mot de passe est combiné avec votre prénom
+                    </small>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
             </form>
@@ -530,6 +554,9 @@
                 <div class="form-group">
                     <label for="signup-password">Mot de passe</label>
                     <input type="password" id="signup-password" required>
+                    <small style="color: #666; margin-top: 0.3rem; display: block;">
+                        Note: Votre mot de passe sera combiné avec votre prénom pour plus de sécurité
+                    </small>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Créer un compte</button>
             </form>
@@ -537,6 +564,21 @@
     </div>
 
     <script>
+        // Authentication configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+        const CURRENT_USER_KEY = 'eduhouse_current_user';
+        const AUTH_TOKEN_KEY = 'eduhouse_auth_token';
+
+        // Check if user is logged in on page load
+        function checkAuthStatus() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+            const currentUser = localStorage.getItem(CURRENT_USER_KEY);
+
+            if (token && currentUser) {
+                displayUserInfo(JSON.parse(currentUser));
+            }
+        }
+
         // Modal functionality
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'block';
@@ -558,26 +600,134 @@
         window.onclick = function(event) {
             let loginModal = document.getElementById('loginModal');
             let signupModal = document.getElementById('signupModal');
-            if (event.target == loginModal) {
+            if (event.target === loginModal) {
                 loginModal.style.display = 'none';
             }
-            if (event.target == signupModal) {
+            if (event.target === signupModal) {
                 signupModal.style.display = 'none';
             }
         }
 
-        // Form handlers
-        function handleLogin(event) {
+        // Login handler with API connection
+        async function handleLogin(event) {
             event.preventDefault();
-            alert('Connexion successful! (Demo mode)\nIn production, this would connect to backend.');
-            closeLoginModal();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token and user info
+                    localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+
+                    // Display user info and close modal
+                    displayUserInfo(data.user);
+                    closeLoginModal();
+
+                    // Clear form
+                    document.getElementById('login-email').value = '';
+                    document.getElementById('login-password').value = '';
+
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    alert(data.error || 'Email ou mot de passe incorrect. Veuillez réessayer.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Erreur de connexion. Assurez-vous que le serveur est en cours d\'exécution.');
+            }
         }
 
-        function handleSignup(event) {
+        // Signup handler with API connection
+        async function handleSignup(event) {
             event.preventDefault();
-            alert('Inscription réussie! (Mode démo)\nVérifiez votre email pour confirmer votre compte.');
-            closeSignupModal();
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const role = document.getElementById('signup-role').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token and user info
+                    localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+
+                    // Auto-login the new user
+                    displayUserInfo(data.user);
+                    closeSignupModal();
+
+                    // Clear form
+                    document.getElementById('signup-name').value = '';
+                    document.getElementById('signup-email').value = '';
+                    document.getElementById('signup-password').value = '';
+
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    alert(data.error || 'Erreur lors de l\'inscription. Veuillez réessayer.');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Erreur de connexion. Assurez-vous que le serveur est en cours d\'exécution.');
+            }
         }
+
+        // Display user info in header
+        function displayUserInfo(user) {
+            const authButtons = document.getElementById('auth-buttons');
+            const userInfo = document.getElementById('user-info');
+            const userName = document.getElementById('user-name');
+
+            authButtons.style.display = 'none';
+            userInfo.style.display = 'flex';
+            userName.textContent = `Bienvenue, ${user.name}!`;
+        }
+
+        // Logout function
+        async function logout() {
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+            localStorage.removeItem(CURRENT_USER_KEY);
+
+            const authButtons = document.getElementById('auth-buttons');
+            const userInfo = document.getElementById('user-info');
+
+            authButtons.style.display = 'flex';
+            userInfo.style.display = 'none';
+
+            alert('Vous avez été déconnecté.');
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
     </script>
 </body>
 </html>
