@@ -454,6 +454,44 @@
             color: white;
         }
 
+        /* Images */
+        .course-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+            margin: -1rem -1rem 1rem -1rem;
+        }
+
+        .instructor-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.8rem;
+            border: 2px solid #2563EB;
+        }
+
+        .instructor-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-banner {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .course-card-with-image {
+            position: relative;
+            overflow: hidden;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
@@ -566,6 +604,9 @@
                 </div>
             </div>
 
+            <!-- Header Banner -->
+            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=200&fit=crop" alt="Dashboard Banner" class="header-banner">
+
             <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card green">
@@ -593,7 +634,10 @@
                     <div class="class-time">Aujourd'hui<br>14:00</div>
                     <div class="class-details">
                         <div class="class-title">Mathématiques - Équations du 2nd Degré</div>
-                        <div class="class-instructor">👨‍🏫 Prof. Marie Claude</div>
+                        <div class="instructor-container">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" alt="Prof. Marie Claude" class="instructor-photo">
+                            <div class="class-instructor">👨‍🏫 Prof. Marie Claude</div>
+                        </div>
                         <div>
                             <button class="btn btn-primary btn-small">Rejoindre Maintenant</button>
                             <span class="badge badge-live">EN DIRECT</span>
@@ -604,7 +648,10 @@
                     <div class="class-time">Demain<br>15:30</div>
                     <div class="class-details">
                         <div class="class-title">Français - Analyse Littéraire</div>
-                        <div class="class-instructor">👩‍🏫 Prof. Sophie Bernard</div>
+                        <div class="instructor-container">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" alt="Prof. Sophie Bernard" class="instructor-photo">
+                            <div class="class-instructor">👩‍🏫 Prof. Sophie Bernard</div>
+                        </div>
                         <div>
                             <button class="btn btn-secondary btn-small">Ajouter au Calendrier</button>
                         </div>
@@ -614,7 +661,10 @@
                     <div class="class-time">Lundi<br>13:00</div>
                     <div class="class-details">
                         <div class="class-title">Physique-Chimie - Optique</div>
-                        <div class="class-instructor">👨‍🏫 Prof. Laurent Petit</div>
+                        <div class="instructor-container">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop" alt="Prof. Laurent Petit" class="instructor-photo">
+                            <div class="class-instructor">👨‍🏫 Prof. Laurent Petit</div>
+                        </div>
                         <div>
                             <button class="btn btn-secondary btn-small">Ajouter au Calendrier</button>
                         </div>
@@ -627,6 +677,7 @@
                 <div class="card-title">📚 Mes Cours en Cours</div>
                 <div class="grid">
                     <div class="course-card">
+                        <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400&h=150&fit=crop" alt="Mathématiques" class="course-thumbnail">
                         <div class="course-header">
                             <div class="course-title">Mathématiques</div>
                             <div class="course-instructor">👨‍🏫 Prof. Marie Claude</div>
@@ -642,6 +693,7 @@
                     </div>
 
                     <div class="course-card">
+                        <img src="https://images.unsplash.com/photo-150784272343-583f20270319?w=400&h=150&fit=crop" alt="Français" class="course-thumbnail">
                         <div class="course-header">
                             <div class="course-title">Français</div>
                             <div class="course-instructor">👩‍🏫 Prof. Sophie Bernard</div>
@@ -657,6 +709,7 @@
                     </div>
 
                     <div class="course-card">
+                        <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&h=150&fit=crop" alt="Sciences" class="course-thumbnail">
                         <div class="course-header">
                             <div class="course-title">Sciences</div>
                             <div class="course-instructor">👨‍🏫 Prof. Laurent Petit</div>
