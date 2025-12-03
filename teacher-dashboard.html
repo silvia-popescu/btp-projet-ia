@@ -595,18 +595,18 @@
         <div class="sidebar">
             <div class="logo">🏠 EduHOUSE</div>
             <ul>
-                <li><a href="#dashboard" class="active">📊 Tableau de Bord</a></li>
-                <li><a href="#courses">📚 Mes Cours</a></li>
-                <li><a href="#classes">🎥 Mes Classes</a></li>
-                <li><a href="#students">👥 Mes Élèves</a></li>
-                <li><a href="#assignments">📝 Devoirs & Évaluations</a></li>
-                <li><a href="#messages">💬 Messages</a></li>
-                <li><a href="#attendance">📋 Présences</a></li>
-                <li><a href="#reports">📈 Rapports</a></li>
-                <li><a href="#settings">⚙️ Paramètres</a></li>
+                <li><a href="#dashboard" onclick="switchTab('dashboard'); return false;" class="active">📊 Tableau de Bord</a></li>
+                <li><a href="#courses" onclick="switchTab('courses'); return false;">📚 Mes Cours</a></li>
+                <li><a href="#classes" onclick="switchTab('classes'); return false;">🎥 Mes Classes</a></li>
+                <li><a href="#students" onclick="switchTab('students'); return false;">👥 Mes Élèves</a></li>
+                <li><a href="#assignments" onclick="switchTab('assignments'); return false;">📝 Devoirs & Évaluations</a></li>
+                <li><a href="#messages" onclick="switchTab('messages'); return false;">💬 Messages</a></li>
+                <li><a href="#attendance" onclick="switchTab('attendance'); return false;">📋 Présences</a></li>
+                <li><a href="#reports" onclick="switchTab('reports'); return false;">📈 Rapports</a></li>
+                <li><a href="#settings" onclick="switchTab('settings'); return false;">⚙️ Paramètres</a></li>
             </ul>
             <div class="sidebar-logout">
-                <a href="index.html" style="text-align: center;">← Déconnexion</a>
+                <a href="#" onclick="handleLogout(event)" style="text-align: center;">← Déconnexion</a>
             </div>
         </div>
 
@@ -1137,6 +1137,33 @@
             event.preventDefault();
             alert('Message envoyé! (Mode démo)');
             closeMessageModal();
+        }
+
+        // Handle Logout
+        function handleLogout(event) {
+            event.preventDefault();
+            localStorage.removeItem('eduhouse_auth_token');
+            localStorage.removeItem('eduhouse_current_user');
+            window.location.href = 'index.html';
+        }
+
+        // Switch Tab Function
+        function switchTab(tabName) {
+            const sectionId = {
+                'dashboard': 'dashboard-section',
+                'courses': 'courses-section',
+                'classes': 'classes-section',
+                'students': 'students-section',
+                'assignments': 'assignments-section',
+                'messages': 'messages-section',
+                'attendance': 'attendance-section',
+                'reports': 'reports-section',
+                'settings': 'settings-section'
+            }[tabName];
+            
+            if (sectionId) {
+                showTeacherSection(sectionId);
+            }
         }
 
         // Sidebar Navigation with section visibility
