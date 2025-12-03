@@ -1139,15 +1139,69 @@
             closeMessageModal();
         }
 
-        // Sidebar Navigation
+        // Sidebar Navigation with section visibility
+        const sections = {
+            '#dashboard': 'dashboard-section',
+            '#courses': 'courses-section',
+            '#classes': 'classes-section',
+            '#students': 'students-section',
+            '#assignments': 'assignments-section',
+            '#messages': 'messages-section',
+            '#attendance': 'attendance-section',
+            '#reports': 'reports-section',
+            '#settings': 'settings-section'
+        };
+
+        function showTeacherSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show the selected section
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+                if (document.querySelector('.main-content')) {
+                    document.querySelector('.main-content').scrollTop = 0;
+                }
+            }
+
+            // Update active link in sidebar
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`.sidebar a[href="#${sectionId.replace('-section', '')}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', function(e) {
-                if (this.getAttribute('href').startsWith('#')) {
+                const href = this.getAttribute('href');
+                if (href && href.startsWith('#') && href !== '#') {
+                    e.preventDefault();
+                    const sectionId = sections[href];
+                    if (sectionId) {
+                        showTeacherSection(sectionId);
+                    } else {
+                        // For logout or other links, let them proceed normally
+                        if (href === '') {
+                            e.target.click();
+                        }
+                    }
+                } else if (href && href.startsWith('#')) {
                     e.preventDefault();
                     document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
                     this.classList.add('active');
                 }
             });
+        });
+
+        // Initialize on page load - show dashboard section
+        window.addEventListener('load', function() {
+            showTeacherSection('dashboard-section');
         });
 
         // Load teacher courses and messages

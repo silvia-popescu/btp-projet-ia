@@ -1467,20 +1467,29 @@
             const token = getAuthToken();
             if (!token) {
                 console.log('No token found');
+                alert('Please login first');
                 return;
             }
 
             try {
+                console.log('Loading users from API...');
                 const response = await fetch(API_BASE + '/users', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 
-                if (!response.ok) throw new Error('Failed to load users');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(`Failed to load users (${response.status}): ${errorData}`);
+                }
                 
                 const users = await response.json();
+                console.log('Users loaded:', users.length);
                 displayUsers(users);
             } catch (error) {
                 console.error('Error loading users:', error);
+                console.error('Error details:', error.stack);
                 alert('Error loading users: ' + error.message);
             }
         }
@@ -1488,7 +1497,15 @@
         // Display users in table
         function displayUsers(users) {
             const tbody = document.querySelector('table tbody');
-            if (!tbody) return;
+            if (!tbody) {
+                console.error('Table tbody not found in DOM');
+                // Try to find it after a short delay
+                setTimeout(() => {
+                    const tbody2 = document.querySelector('table tbody');
+                    if (tbody2) displayUsers(users);
+                }, 500);
+                return;
+            }
             
             tbody.innerHTML = '';
             

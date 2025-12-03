@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Parent - EduHOUSE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #f39c12;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 0.5rem;
+        }
+
+        .child-card {
+            background: #f9f9f9;
+            border-left: 4px solid #f39c12;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .course-list {
+            list-style: none;
+        }
+
+        .course-item {
+            background: #f9f9f9;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f39c12;
+            border-radius: 5px;
+        }
+
+        .course-title {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .course-teacher {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .message-list {
+            list-style: none;
+        }
+
+        .message-item {
+            background: #f9f9f9;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f39c12;
+            border-radius: 5px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .message-time {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .message-content {
+            margin-top: 0.5rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="logo.svg" alt="Logo" style="width: 50px; height: 50px; margin-bottom: 0.5rem;">
+                EduHOUSE
+            </div>
+            <ul>
+                <li><a href="#dashboard" class="active" onclick="switchTab('dashboard')">📊 Tableau de Bord</a></li>
+                <li><a href="#children" onclick="switchTab('children')">👨‍👩‍👧‍👦 Mes Enfants</a></li>
+                <li><a href="#courses" onclick="switchTab('courses')">📚 Cours des Enfants</a></li>
+                <li><a href="#messages" onclick="switchTab('messages')">💬 Messages</a></li>
+                <li><a href="#progress" onclick="switchTab('progress')">📈 Progression</a></li>
+                <li><a href="#settings" onclick="switchTab('settings')">⚙️ Paramètres</a></li>
+            </ul>
+            <button class="btn btn-logout" onclick="handleLogout()">← Déconnexion</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <h1>Tableau de Bord Parent 👨‍👩‍👧‍👦</h1>
+                    <small>Suivi de la scolarité de vos enfants</small>
+                </div>
+                <div id="header-info">
+                    <div id="header-name">Bonjour, Parent</div>
+                    <div id="header-email" style="font-size: 0.9rem; color: #666;"></div>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="children-count">0</div>
+                        <div class="stat-label">Enfants Suivi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="courses-count">0</div>
+                        <div class="stat-label">Cours Inscrits</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Accès Parent Actif</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">👨‍👩‍👧‍👦 Résumé des Enfants</div>
+                    <div id="children-summary">
+                        <p style="color: #999; text-align: center;">Chargement...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Children Tab -->
+            <div id="children-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-title">👨‍👩‍👧‍👦 Mes Enfants</div>
+                    <div id="children-list">
+                        <p style="color: #999; text-align: center;">Chargement...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Tab -->
+            <div id="courses-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-title">📚 Cours de Mes Enfants</div>
+                    <ul id="courses-list" class="course-list">
+                        <li style="color: #999; text-align: center;">Chargement...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div id="messages-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-title">💬 Messages</div>
+                    <ul id="messages-list" class="message-list">
+                        <li style="color: #999; text-align: center;">Chargement...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Progress Tab -->
+            <div id="progress-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-title">📈 Progression Académique</div>
+                    <p style="color: #999; text-align: center;">Les données de progression apparaîtront ici.</p>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content" style="display: none;">
+                <div class="card">
+                    <div class="card-title">⚙️ Paramètres</div>
+                    <div style="padding: 1rem;">
+                        <h3 style="margin-bottom: 1rem;">Informations du Compte</h3>
+                        <p><strong>Email:</strong> <span id="settings-email"></span></p>
+                        <p><strong>Rôle:</strong> Parent</p>
+                        <div style="margin-top: 2rem;">
+                            <button class="btn btn-primary" onclick="alert('Fonction en développement')">Changer le Mot de Passe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const AUTH_TOKEN_KEY = 'eduhouse_auth_token';
+        const CURRENT_USER_KEY = 'eduhouse_current_user';
+        const API_BASE = window.__API_BASE_URL__ || 'http://localhost:5000/api';
+
+        // Check authentication
+        function checkAuthentication() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+
+            if (!token || !user) {
+                window.location.href = 'index.html';
+                return false;
+            }
+
+            if (user.role !== 'parent') {
+                // Redirect to appropriate dashboard
+                if (user.role === 'student') {
+                    window.location.href = 'dashboard.html';
+                } else if (user.role === 'teacher') {
+                    window.location.href = 'teacher-dashboard.html';
+                } else if (user.role === 'admin') {
+                    window.location.href = 'admin-panel.html';
+                }
+                return false;
+            }
+
+            // Display user info
+            document.getElementById('header-name').innerHTML = `<strong>${user.name}</strong>`;
+            document.getElementById('header-email').textContent = user.email;
+            document.getElementById('settings-email').textContent = user.email;
+
+            return true;
+        }
+
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabName + '-tab').style.display = 'block';
+
+            const links = document.querySelectorAll('.sidebar a');
+            links.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Load tab data if needed
+            if (tabName === 'children') loadChildren();
+            if (tabName === 'courses') loadCourses();
+            if (tabName === 'messages') loadMessages();
+        }
+
+        async function loadChildren() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+
+            try {
+                const response = await fetch(API_BASE + '/users', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (!response.ok) throw new Error('Failed to load children');
+
+                const users = await response.json();
+                const childrenIds = user.childrenIds || [];
+                const children = users.filter(u => childrenIds.includes(u.id));
+
+                let html = '';
+                if (children.length === 0) {
+                    html = '<p style="color: #999; text-align: center;">Aucun enfant associé à votre compte.</p>';
+                } else {
+                    children.forEach(child => {
+                        html += `
+                            <div class="child-card">
+                                <div style="font-weight: bold; margin-bottom: 0.3rem;">${child.name}</div>
+                                <div style="font-size: 0.9rem; color: #666;">Email: ${child.email}</div>
+                                <div style="font-size: 0.9rem; color: #666;">Rôle: Élève</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                document.getElementById('children-list').innerHTML = html;
+                document.getElementById('children-summary').innerHTML = html;
+                document.getElementById('children-count').textContent = children.length;
+            } catch (error) {
+                console.error('Error loading children:', error);
+                document.getElementById('children-list').innerHTML = '<p style="color: red;">Erreur de chargement</p>';
+            }
+        }
+
+        async function loadCourses() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
+            try {
+                const response = await fetch(API_BASE + '/courses', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (!response.ok) throw new Error('Failed to load courses');
+
+                const courses = await response.json();
+                let html = '';
+
+                if (!courses || courses.length === 0) {
+                    html = '<li style="color: #999; text-align: center;">Aucun cours trouvé.</li>';
+                } else {
+                    courses.forEach(course => {
+                        html += `
+                            <li class="course-item">
+                                <div class="course-title">${course.name || 'Cours'}</div>
+                                <div class="course-teacher">Enseignant: ${course.teacher || 'Non spécifié'}</div>
+                            </li>
+                        `;
+                    });
+                }
+
+                document.getElementById('courses-list').innerHTML = html;
+                document.getElementById('courses-count').textContent = courses ? courses.length : 0;
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                document.getElementById('courses-list').innerHTML = '<li style="color: red;">Erreur de chargement</li>';
+            }
+        }
+
+        async function loadMessages() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
+            try {
+                const response = await fetch(API_BASE + '/messages', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (!response.ok) throw new Error('Failed to load messages');
+
+                const messages = await response.json();
+                let html = '';
+
+                if (!messages || messages.length === 0) {
+                    html = '<li style="color: #999; text-align: center;">Aucun message reçu.</li>';
+                } else {
+                    messages.forEach(msg => {
+                        html += `
+                            <li class="message-item">
+                                <div>
+                                    <span class="message-sender">De: ${msg.fromId || 'Système'}</span>
+                                    <span class="message-time">Récemment</span>
+                                </div>
+                                <div class="message-content">${msg.content || 'Aucun contenu'}</div>
+                            </li>
+                        `;
+                    });
+                }
+
+                document.getElementById('messages-list').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                document.getElementById('messages-list').innerHTML = '<li style="color: red;">Erreur de chargement</li>';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem(AUTH_TOKEN_KEY);
+            localStorage.removeItem(CURRENT_USER_KEY);
+            alert('Vous avez été déconnecté.');
+            window.location.href = 'index.html';
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            if (checkAuthentication()) {
+                loadChildren();
+            }
+        });
+    </script>
+<script>window.__API_BASE_URL__='http://localhost:5000/api';</script>
+</body>
+</html>
