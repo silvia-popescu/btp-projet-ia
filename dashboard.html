@@ -1659,6 +1659,29 @@
 
         // Initialize: Check authentication and show dashboard section on page load
         window.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+
+            // Check if user is authenticated and is a student
+            if (!token || !user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (user.role !== 'student') {
+                // Redirect to appropriate dashboard
+                if (user.role === 'teacher') {
+                    window.location.href = 'teacher-dashboard.html';
+                } else if (user.role === 'admin') {
+                    window.location.href = 'admin-panel.html';
+                } else if (user.role === 'parent') {
+                    window.location.href = 'parent-dashboard.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+                return;
+            }
+
             if (checkAuthentication()) {
                 showSection('dashboard-section');
 

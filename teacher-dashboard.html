@@ -1155,7 +1155,7 @@
         function showTeacherSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
-                section.style.display = 'none';
+                if (section) section.style.display = 'none';
             });
 
             // Show the selected section
@@ -1169,7 +1169,7 @@
 
             // Update active link in sidebar
             document.querySelectorAll('.sidebar a').forEach(link => {
-                link.classList.remove('active');
+                if (link && link.href) link.classList.remove('active');
             });
             const activeLink = document.querySelector(`.sidebar a[href="#${sectionId.replace('-section', '')}"]`);
             if (activeLink) {
@@ -1177,6 +1177,35 @@
             }
         }
 
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            const token = localStorage.getItem('eduhouse_auth_token');
+            const user = JSON.parse(localStorage.getItem('eduhouse_current_user') || 'null');
+
+            if (!token || !user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if (user.role !== 'teacher') {
+                if (user.role === 'student') {
+                    window.location.href = 'dashboard.html';
+                } else if (user.role === 'admin') {
+                    window.location.href = 'admin-panel.html';
+                } else if (user.role === 'parent') {
+                    window.location.href = 'parent-dashboard.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+                return;
+            }
+
+            // Initialize sections
+            showTeacherSection('dashboard-section');
+        });
+
+        // Sidebar link handlers
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', function(e) {
                 const href = this.getAttribute('href');
@@ -1185,23 +1214,9 @@
                     const sectionId = sections[href];
                     if (sectionId) {
                         showTeacherSection(sectionId);
-                    } else {
-                        // For logout or other links, let them proceed normally
-                        if (href === '') {
-                            e.target.click();
-                        }
                     }
-                } else if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
-                    this.classList.add('active');
                 }
             });
-        });
-
-        // Initialize on page load - show dashboard section
-        window.addEventListener('load', function() {
-            showTeacherSection('dashboard-section');
         });
 
         // Load teacher courses and messages
