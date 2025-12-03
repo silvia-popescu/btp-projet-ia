@@ -1149,20 +1149,23 @@
 
         // Switch Tab Function
         function switchTab(tabName) {
-            const sectionId = {
-                'dashboard': 'dashboard-section',
-                'courses': 'courses-section',
-                'classes': 'classes-section',
-                'students': 'students-section',
-                'assignments': 'assignments-section',
-                'messages': 'messages-section',
-                'attendance': 'attendance-section',
-                'reports': 'reports-section',
-                'settings': 'settings-section'
-            }[tabName];
+            // Update active sidebar link
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
             
-            if (sectionId) {
-                showTeacherSection(sectionId);
+            // Find and activate the clicked link
+            const links = document.querySelectorAll('.sidebar a');
+            links.forEach(link => {
+                if (link.getAttribute('href') === '#' + tabName) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Scroll to top
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
             }
         }
 
