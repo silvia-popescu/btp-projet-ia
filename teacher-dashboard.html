@@ -149,6 +149,15 @@
             margin-bottom: 2rem;
         }
 
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
         .stat-card {
             background: white;
             padding: 1.5rem;
@@ -612,8 +621,10 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <div class="dashboard-header">
+            <!-- Dashboard Section (Default) -->
+            <div id="dashboard-section" class="content-section active" style="display: block;">
+                <!-- Header -->
+                <div class="dashboard-header">
                 <div class="header-left">
                     <h1>Bienvenue, Prof! 👨‍🏫</h1>
                     <small>École | Dernière connexion: Aujourd'hui 09:00</small>
@@ -1069,6 +1080,8 @@
             </form>
         </div>
     </div>
+            </div> <!-- End dashboard-section -->
+        </div> <!-- End main-content -->
 
     <script>
         // Modal Functions
@@ -1147,8 +1160,22 @@
             window.location.href = 'index.html';
         }
 
-        // Switch Tab Function
+        // Switch Tab Function - Now with proper section showing/hiding
         function switchTab(tabName) {
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+            
+            // Show the selected section
+            const sectionId = tabName + '-section';
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+                section.style.display = 'block';
+            }
+            
             // Update active sidebar link
             document.querySelectorAll('.sidebar a').forEach(link => {
                 link.classList.remove('active');
@@ -1168,7 +1195,6 @@
                 mainContent.scrollTop = 0;
             }
             
-            // Log for debugging
             console.log('Switched to tab:', tabName);
         }
 
