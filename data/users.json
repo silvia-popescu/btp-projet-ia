@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "name": "Jean Dupont",
+    "email": "student1@example.com",
+    "password": "$2b$10$xOWjETpuPEyUoOdkDPuDSOcfAmA4Ec2X2YCEl8/86hO7dckz3R4ZK",
+    "role": "student",
+    "phone": "+33612345678",
+    "city": "Paris",
+    "created_at": "2025-12-02T15:35:58.650Z"
+  },
+  {
+    "id": 2,
+    "name": "Sophie Martin",
+    "email": "student2@example.com",
+    "password": "$2b$10$C8QKwx.Qe0DqkJErmPP3OO072JvyusZa3Zua33vSzvzC3Xu3UMRDq",
+    "role": "student",
+    "phone": "+33687654321",
+    "city": "Lyon",
+    "created_at": "2025-12-02T15:35:58.784Z"
+  },
+  {
+    "id": 3,
+    "name": "Luc Petit",
+    "email": "student3@example.com",
+    "password": "$2b$10$UAGveEtX8O1sbSnCUfwm7e7uwWA3SJW231NOZsC.Tc3MsCX/KRSbK",
+    "role": "student",
+    "phone": "+33698765432",
+    "city": "Marseille",
+    "created_at": "2025-12-02T15:35:58.909Z"
+  },
+  {
+    "id": 4,
+    "name": "Marie Dupont",
+    "email": "parent1@example.com",
+    "password": "$2b$10$ltHUoPfth1amqfNa6RRU/.wBj4LLmV7z9v3WMVP.yq8D3f.z0Fiz.",
+    "role": "parent",
+    "phone": "+33612111111",
+    "city": "Paris",
+    "created_at": "2025-12-02T15:35:59.068Z"
+  },
+  {
+    "id": 5,
+    "name": "Pierre Martin",
+    "email": "parent2@example.com",
+    "password": "$2b$10$hdXK9VMPlovq.YsfZN28WueqqOhiKj7IGOwgXaE/KAjNIlOtpBMTC",
+    "role": "parent",
+    "phone": "+33687222222",
+    "city": "Lyon",
+    "created_at": "2025-12-02T15:35:59.221Z"
+  },
+  {
+    "id": 6,
+    "name": "Prof. Pierre Leclerc",
+    "email": "teacher1@example.com",
+    "password": "$2b$10$pL36du8sMAEAl9sReFYXBuxdC793vHBHDBtQ9ZZwHneuVzTIFEg/6",
+    "role": "teacher",
+    "phone": "+33612333333",
+    "city": "Paris",
+    "created_at": "2025-12-02T15:35:59.378Z"
+  },
+  {
+    "id": 7,
+    "name": "Prof. Carole Dubois",
+    "email": "teacher2@example.com",
+    "password": "$2b$10$SbMLmDzC2N2zoHU.FnuFZ.3LBVpfYFYwemZZjLy2JiB6MgrKW1iC.",
+    "role": "teacher",
+    "phone": "+33687444444",
+    "city": "Lyon",
+    "created_at": "2025-12-02T15:35:59.527Z"
+  },
+  {
+    "id": 8,
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "$2b$10$oORSsFnbznMXyjyAsEaX8OH8dVxRJC2zwSieOeKkdqTPSmw1RiKZa",
+    "role": "admin",
+    "phone": "+33600000000",
+    "city": "Paris",
+    "created_at": "2025-12-02T15:35:59.734Z"
+  },
+  {
+    "id": 9,
+    "name": "ToDelete",
+    "email": "todelete@test.com",
+    "password": "$2b$10$5HJnkrB52.GnYFUcWZJ0ieqLbYiuhje1vVyFuzH1JTZxTuKTyNmyK",
+    "role": "student",
+    "created_at": "2025-12-03T09:29:27.744Z"
+  }
+]

@@ -613,6 +613,18 @@
             }
         }
     </style>
+    <style>
+      .fallback-sidebar{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;padding:1rem}
+      .fallback-main{margin-left:300px;padding:1rem}
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href')); if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}));
+      });
+    </script>
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>window.__API_BASE_URL__='http://localhost:5000/api';</script>
+<script defer src="assets/js/main.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -1394,6 +1406,9 @@
                 link.classList.remove('active');
             });
             event.target.classList.add('active');
+            
+            // Load tab data if needed
+            if (tabName === 'users') loadUsers();
         }
 
         // Modal Functions
@@ -1403,6 +1418,14 @@
 
         function closeUserModal() {
             document.getElementById('userModal').style.display = 'none';
+            // Reset form to add mode
+            const form = document.querySelector('#userModal form');
+            const title = document.querySelector('#userModal h2');
+            title.textContent = 'Ajouter un Nouvel Utilisateur';
+            form.onsubmit = handleAddUser;
+            document.getElementById('user-password').placeholder = 'Mot de Passe Temporaire';
+            document.getElementById('user-password').required = true;
+            form.reset();
         }
 
         function openCourseModal() {
@@ -1431,14 +1454,204 @@
             }
         }
 
-        // Form Handlers
-        function handleAddUser(event) {
-            event.preventDefault();
-            alert('Utilisateur créé avec succès! (Mode démo)');
-            closeUserModal();
-            event.target.reset();
+        // API Base URL
+        const API_BASE = window.__API_BASE_URL__ || 'http://localhost:5000/api';
+        
+        // Get auth token
+        function getAuthToken() {
+            return localStorage.getItem('eduhouse_auth_token');
         }
 
+        // Load and display users
+        async function loadUsers() {
+            const token = getAuthToken();
+            if (!token) {
+                console.log('No token found');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE + '/users', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                
+                if (!response.ok) throw new Error('Failed to load users');
+                
+                const users = await response.json();
+                displayUsers(users);
+            } catch (error) {
+                console.error('Error loading users:', error);
+                alert('Error loading users: ' + error.message);
+            }
+        }
+
+        // Display users in table
+        function displayUsers(users) {
+            const tbody = document.querySelector('table tbody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No users found</td></tr>';
+                return;
+            }
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                const roleClass = 'badge-' + user.role;
+                const roleText = user.role === 'teacher' ? 'Enseignant' : user.role === 'student' ? 'Élève' : user.role === 'parent' ? 'Parent' : 'Admin';
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar-small">${user.name.substring(0, 2).toUpperCase()}</div>
+                            <div class="user-details">
+                                <div class="user-name">${user.name}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td><span class="badge ${roleClass}">${roleText}</span></td>
+                    <td><span class="badge badge-active">Actif</span></td>
+                    <td>${new Date(user.created_at).toLocaleDateString('fr-FR')}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-small" onclick="editUser(${user.id})">Éditer</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteUser(${user.id}, '${user.name}')">Supprimer</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Edit user
+        async function editUser(userId) {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/users/' + userId, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                
+                if (!response.ok) throw new Error('Failed to load user');
+                
+                const data = await response.json();
+                const user = data.user;
+                
+                // Show edit modal (reuse user modal)
+                document.getElementById('user-name').value = user.name;
+                document.getElementById('user-email').value = user.email;
+                document.getElementById('user-role').value = user.role;
+                document.getElementById('user-password').value = '';
+                document.getElementById('user-password').placeholder = 'Leave empty to keep current password';
+                document.getElementById('user-password').required = false;
+                
+                // Change form to edit mode
+                const modal = document.getElementById('userModal');
+                const form = modal.querySelector('form');
+                const title = modal.querySelector('h2');
+                title.textContent = 'Éditer l\'Utilisateur';
+                
+                form.onsubmit = (e) => handleUpdateUser(e, userId);
+                openUserModal();
+            } catch (error) {
+                alert('Error loading user: ' + error.message);
+            }
+        }
+
+        // Delete user
+        async function deleteUser(userId, userName) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ' + userName + '?')) return;
+            
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/users/' + userId, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Delete failed');
+                }
+                
+                alert('Utilisateur supprimé avec succès!');
+                loadUsers();
+            } catch (error) {
+                alert('Error deleting user: ' + error.message);
+            }
+        }
+
+        // Handle add user
+        async function handleAddUser(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('user-email').value;
+            const role = document.getElementById('user-role').value;
+            const password = document.getElementById('user-password').value;
+            
+            try {
+                const response = await fetch(API_BASE + '/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Registration failed');
+                }
+                
+                alert('Utilisateur créé avec succès!');
+                closeUserModal();
+                event.target.reset();
+                loadUsers();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Handle update user
+        async function handleUpdateUser(event, userId) {
+            event.preventDefault();
+            
+            const token = getAuthToken();
+            if (!token) return;
+            
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('user-email').value;
+            const role = document.getElementById('user-role').value;
+            
+            try {
+                const response = await fetch(API_BASE + '/users/' + userId, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ name, email, role })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Update failed');
+                }
+                
+                alert('Utilisateur mis à jour avec succès!');
+                closeUserModal();
+                loadUsers();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Form Handlers
         function handleAddCourse(event) {
             event.preventDefault();
             alert('Cours créé avec succès! (Mode démo)');
@@ -1452,6 +1665,42 @@
             closeClassModal();
             event.target.reset();
         }
+        
+        // Load users on page load if on users tab
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = getAuthToken();
+            if (!token) {
+                alert('Please login first');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Verify token is still valid
+            try {
+                const decoded = JSON.parse(atob(token.split('.')[1]));
+                if (decoded.role !== 'admin') {
+                    alert('Admin access required');
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } catch (e) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            loadUsers();
+        });
     </script>
+
+<script>
+// Admin: show all courses and messages
+(function(){
+  const token = localStorage.getItem('eduhouse_auth_token') || localStorage.getItem('eduhouse_auth_token');
+  if(!token) return;
+  const base = window.__API_BASE_URL__ || 'http://localhost:5000/api';
+  fetch(base + '/admin/classes', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{ if(list && list.length){ const c = document.createElement('div'); c.className='card'; c.innerHTML = '<div class="card-title">Tous les Cours</div>'+list.map(x=>`<div style="padding:.4rem 0">${x.name} (Teacher: ${x.teacher_id})</div>`).join(''); document.querySelector('.main-content').prepend(c); } }).catch(()=>{});
+  fetch(base + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{ if(list && list.length){ const m = document.createElement('div'); m.className='card'; m.innerHTML = '<div class="card-title">Tous les Messages</div>'+list.map(x=>`<div style="padding:.4rem 0">De ${x.sender_id} -> Reçu: ${x.content}</div>`).join(''); document.querySelector('.main-content').prepend(m); } }).catch(()=>{});
+})();
+</script>
 </body>
 </html>

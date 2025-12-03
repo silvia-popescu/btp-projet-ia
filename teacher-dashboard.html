@@ -576,6 +576,18 @@
             }
         }
     </style>
+    <style>
+      .fallback-sidebar{background:linear-gradient(135deg,#2ecc71,#27ae60);color:#fff;padding:1rem}
+      .fallback-main{margin-left:260px;padding:1rem}
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href')); if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}));
+      });
+    </script>
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>window.__API_BASE_URL__='http://localhost:5000/api';</script>
+<script defer src="assets/js/main.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -1137,6 +1149,26 @@
                 }
             });
         });
+
+        // Load teacher courses and messages
+        (function(){
+            const token = localStorage.getItem('eduhouse_auth_token');
+            if(!token) return;
+            const base = window.__API_BASE_URL__ || 'http://localhost:5000/api';
+            fetch(base + '/teacher/classes', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{
+                if(list && list.length){
+                    const card = document.createElement('div'); card.className='card'; card.innerHTML='<div class="card-title">Mes Cours</div>'+list.map(c=>`<div style="padding:.5rem 0">${c.title}</div>`).join('');
+                    document.querySelector('.main-content').prepend(card);
+                }
+            }).catch(()=>{});
+
+            fetch(base + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{
+                if(list && list.length){
+                    const card = document.createElement('div'); card.className='card'; card.innerHTML='<div class="card-title">Messages Reçus</div>'+list.map(m=>`<div style="padding:.4rem 0">De: ${m.fromId} — ${m.content}</div>`).join('');
+                    document.querySelector('.main-content').prepend(card);
+                }
+            }).catch(()=>{});
+        })();
     </script>
 </body>
 </html>

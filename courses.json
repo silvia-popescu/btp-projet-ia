@@ -1,0 +1,4 @@
+[
+  { "id": 1, "title": "Mathématiques - Équations", "teacherId": 3, "studentIds": [1] },
+  { "id": 2, "title": "Français - Littérature", "teacherId": 3, "studentIds": [] }
+]

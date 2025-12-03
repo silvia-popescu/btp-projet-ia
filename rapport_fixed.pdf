@@ -1,0 +1,64 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 4 0 R >> >> /MediaBox [0 0 612 792] /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1307 >>
+stream
+BT
+/F1 12 Tf
+40 750 Td
+(Rapport d'analyse - mise à jour) Tj
+0 -14 Td
+(Date: 2025-12-01T12:47:32.358Z) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Changements appliqués \(vibe coding improvements\):) Tj
+0 -14 Td
+(- Ajout d'un petit dossier assets/ avec assets/css/styles.css et assets/js/main.js pour externaliser styles et scripts visuels \(effets, animations, shortcuts\).) Tj
+0 -14 Td
+(- Injection minimale de références \(link + script\) dans index.html, dashboard.html, admin-panel.html, teacher-dashboard.html, course-detail.html \(modification légère et non-destructive\).) Tj
+0 -14 Td
+(- CSS apporte un fond plus moderne, cartes glassy, animations d'apparition et pulsation pour badges "live".) Tj
+0 -14 Td
+(- JS apporte: animation d'entrée pour sections visibles, raccourcis clavier \(j/k\) pour naviguer dans la sidebar, fallback pour logo absent.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Recommandations futures:) Tj
+0 -14 Td
+(- Extraire tout le CSS/JS inline restant dans les pages et centraliser les composants réutilisables.) Tj
+0 -14 Td
+(- Ajouter un petit npm script et CI \(link-checker\) pour automatiser la validation des liens et assets.) Tj
+0 -14 Td
+(- Considérer usage de template engine ou SPA framework si le projet grandit.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Ce PDF documente les modifications et a été régénéré.) Tj
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1675
+%%EOF

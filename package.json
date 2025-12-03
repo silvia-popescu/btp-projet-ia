@@ -23,10 +23,10 @@
   ],
   "private": false,
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js",
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
     "build": "echo 'Frontend-only project, no build needed'",
-    "test": "echo 'Add tests here'",
+    "test": "echo 'Add tests here'", "smoke": "node scripts/smoke.js",
     "serve": "python -m http.server 8000"
   },
   "engines": {

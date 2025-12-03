@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Mathématiques Avancées",
+    "description": "Algèbre et Géométrie pour lycée",
+    "teacher_id": 6,
+    "level": "Lycée",
+    "subject": "Mathématiques",
+    "schedule": "Lundi, Mercredi, Vendredi 10h00",
+    "max_students": 30,
+    "is_active": true,
+    "created_at": "2025-12-02T15:35:59.771Z"
+  },
+  {
+    "id": 2,
+    "name": "Français Littéraire",
+    "description": "Étude des textes classiques",
+    "teacher_id": 7,
+    "level": "Lycée",
+    "subject": "Français",
+    "schedule": "Mardi, Jeudi 14h00",
+    "max_students": 25,
+    "is_active": true,
+    "created_at": "2025-12-02T15:35:59.772Z"
+  }
+]

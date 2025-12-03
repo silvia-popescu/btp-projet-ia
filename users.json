@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "Jean Dupont",
+    "email": "student@example.com",
+    "password": "$2b$10$.6bb4c8FnBKRE.AU4mOyM.HZK0mRNyLPYce6RopxhYyauK6dOCGGa",
+    "role": "student",
+    "created_at": "2025-12-01T15:07:07.803Z",
+    "parentIds": [
+      2
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Marie Martin",
+    "email": "parent@example.com",
+    "password": "$2b$10$F/17tS7bKF5/C1.IffNRw.LAtIavc4gtVExnXF8P7.5dipHFq0LYq",
+    "role": "parent",
+    "created_at": "2025-12-01T15:07:07.889Z",
+    "childrenIds": [
+      1
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Prof. Pierre Leclerc",
+    "email": "teacher@example.com",
+    "password": "$2b$10$6xTFZFg3pTEoM0pMci0zu.yj/xbJ/yJIc0Uxrqn3w5JQDD.QiRqCy",
+    "role": "teacher",
+    "created_at": "2025-12-01T15:07:07.973Z"
+  },
+  {
+    "id": 4,
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "$2b$10$kGefVmP5Israv0cnFanWse2N5VgoY2qtJD9hpxz.gWIjsGKQjnHYS",
+    "role": "admin",
+    "created_at": "2025-12-01T15:31:00.488Z"
+  },
+  {
+    "id": 5,
+    "name": "CLI Test",
+    "email": "cli_test@example.com",
+    "password": "$2b$10$.6bb4c8FnBKRE.AU4mOyM.HZK0mRNyLPYce6RopxhYyauK6dOCGGa",
+    "role": "student",
+    "created_at": "2025-12-02T14:37:35.728Z"
+  },
+  {
+    "id": 6,
+    "name": "CLI Test 2",
+    "email": "cli_test2@example.com",
+    "password": "$2b$10$.6bb4c8FnBKRE.AU4mOyM.HZK0mRNyLPYce6RopxhYyauK6dOCGGa",
+    "role": "student",
+    "created_at": "2025-12-02T14:48:05.674Z"
+  }
+]

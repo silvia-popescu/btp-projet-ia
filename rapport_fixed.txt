@@ -1,0 +1,26 @@
+Rapport d'analyse - EduHOUSE
+Date: 2025-12-01T14:29:30.626Z
+
+Özet (Türkçe):
+1) Linkler ve varlıklar
+- Proje içindeki yerel HTML sayfaları (index.html, dashboard.html, admin-panel.html, teacher-dashboard.html, course-detail.html) mevcut ve birbirlerine olan yerel href (ör. index.html, dashboard.html) referansları hedef dosyaları gösteriyor.
+- Dashboard içindeki navigasyon id'leri (#dashboard, #courses, #exam-*, #settings vb.) karşılık gelen section id'lere sahip; iç anklar kırık görünmüyor.
+- Birçok görsel dış kaynak (Unsplash) kullanıyor — offline durumda veya kısıtlı ağda yüklenmeyecektir; logo.svg yerel olarak mevcut.
+
+2) Yapı ve "vibe coding" değerlendirmesi
+- Proje kökünde çok sayıda tek-dosya HTML (inline CSS/JS) var; bu hızlı prototip için uygun ancak bakımı zorlaştırıyor.
+- Yapılan iyileştirmeler: assets/css/styles.css ve assets/js/main.js eklendi; inline bazı stiller/behaviour dışarı taşındı; auth akışı düzeltildi (prenon+password birleşimi kaldırıldı) ve sqlite3 yoksa users.json fallback eklendi.
+
+3) Bulunan sorunlar ve öneriler (öncelikli)
+- sqlite3 kurulum/derleme Windows üzerinde native build nedeniyle zaman zaman takılabiliyor; paket kurulumu için sqlite3 atlanarak temel bağımlılıklar yüklenebilir veya sistemde gereken build araçları (node-gyp, Python, VS Build Tools) sağlanmalı.
+- Tavsiye: tüm sayfalardaki inline CSS/JS tamamen assets klasörüne taşınsın, bir basit npm start script ve .env ile yapılandırma eklensin, ve basit CI link-checker (npm link-checker veya htmlproofer) konulsun.
+- Güvenlik: JWT_SECRET env olarak tanımlanmalı ve demo şifreler geliştirme dışına çıkarılmalı.
+
+4) Çalıştırma / Test talimatı (kısa)
+- Terminal: npm install express cors bcryptjs jsonwebtoken && node server.js
+- Tarayıcı: http://localhost:5000/ -> index.html, sonra kayıt/giriş modalı; demo: parent@example.com / password123
+
+5) Ek notlar
+- Model-rate-limit hatası (API sağlayıcı tarafı) proje dışı ve kullanıcı istek hızına bağlıdır; beklemek veya plan yükseltmesi gerekebilir.
+
+Sonuç: Bağlantılar ve temel akışlar çoğunlukla çalışır hale getirildi; yapı daha modüler ve test edilebilir olması için assets/ ve backend konfigürasyonlarının daha da ayrıştırılması önerilir.

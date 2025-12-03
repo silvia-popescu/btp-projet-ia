@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "homework_id": 1,
+    "student_id": 1,
+    "submission_text": "Voici ma solution des exercices...",
+    "submission_file_url": "https://example.com/homework1.pdf",
+    "submitted_at": "2025-12-02T15:40:02.368Z",
+    "status": "graded",
+    "grade": 85,
+    "feedback": "Excellent travail!",
+    "graded_by": 6,
+    "graded_at": "2025-12-02T15:40:04.478Z"
+  }
+]

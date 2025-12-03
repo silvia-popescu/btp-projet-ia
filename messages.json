@@ -1,0 +1,5 @@
+[
+  { "id": 1, "fromId": 3, "toId": 1, "content": "Excellent travail sur les devoirs.", "timestamp": "2025-12-02T10:00:00Z" },
+  { "id": 2, "fromId": 1, "toId": 3, "content": "Merci prof!", "timestamp": "2025-12-02T11:00:00Z" },
+  { "id": 3, "fromId": 2, "toId": 3, "content": "Bonjour, pouvez-vous me donner un feedback?", "timestamp": "2025-12-02T11:05:00Z" }
+]

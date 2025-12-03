@@ -552,6 +552,18 @@
             }
         }
     </style>
+    <style>
+      .fallback-sidebar{background:linear-gradient(135deg,#1E3A8A,#2563EB);color:#fff;padding:1rem}
+      .fallback-main{margin-left:260px;padding:1rem}
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href')); if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}}));
+      });
+    </script>
+<link rel="stylesheet" href="assets/css/styles.css">
+<script>window.__API_BASE_URL__='http://localhost:5000/api';</script>
+<script defer src="assets/js/main.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -1649,8 +1661,55 @@
         window.addEventListener('DOMContentLoaded', function() {
             if (checkAuthentication()) {
                 showSection('dashboard-section');
+
+                // Parent-specific: fetch profile and children from server and display
+                const token = localStorage.getItem(AUTH_TOKEN_KEY);
+                const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+                if (user && user.role === 'parent' && token) {
+                    fetch(API_BASE_URL + '/user/profile', { headers: { 'Authorization': 'Bearer ' + token } })
+                      .then(r => r.json())
+                      .then(p => {
+                        const me = p.user;
+                        fetch(API_BASE_URL + '/admin/users')
+                          .then(r => r.json())
+                          .then(list => {
+                             const kids = list.filter(u => (me.childrenIds || []).includes(u.id));
+                             if (kids.length) {
+                                 const card = document.createElement('div'); card.className='card'; card.innerHTML = `<div class="card-title">Öğrencileriniz</div>` + kids.map(k=>`<div style="padding:.5rem 0">${k.name} (${k.email})</div>`).join('');
+                                 document.querySelector('.main-content').prepend(card);
+                             }
+                          })
+                          .catch(()=>{});
+                      })
+                      .catch(()=>{});
+                }
             }
         });
+
+        // Fetch and display courses and messages according to role
+        (function(){
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY)||'null');
+            if(!token || !user) return;
+
+            // Courses
+            fetch(API_BASE_URL + '/student/classes', { headers: { 'Authorization': 'Bearer ' + token } })
+              .then(r=>r.json()).then(list=>{
+                  if(list && list.length){
+                      const card = document.createElement('div'); card.className='card'; card.innerHTML = '<div class="card-title">Mes Cours</div>' + list.map(c=>`<div style="padding:.4rem 0">${c.title}</div>`).join('');
+                      document.querySelector('.main-content').prepend(card);
+                  }
+              }).catch(()=>{});
+
+            // Messages
+            fetch(API_BASE_URL + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } })
+              .then(r=>r.json()).then(list=>{
+                  if(list && list.length){
+                      const card = document.createElement('div'); card.className='card'; card.innerHTML = '<div class="card-title">Messages Reçus</div>' + list.map(m=>`<div style="padding:.4rem 0"><strong>De:</strong> ${m.fromId} — ${m.content}</div>`).join('');
+                      document.querySelector('.main-content').prepend(card);
+                  }
+              }).catch(()=>{});
+        })();
     </script>
 </body>
 </html>

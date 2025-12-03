@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "sender_id": 6,
+    "receiver_id": 1,
+    "subject": "Bien fait!",
+    "content": "Excellent travail sur le dernier devoir!",
+    "is_read": false,
+    "sent_at": "2025-12-02T15:40:24.609Z"
+  }
+]

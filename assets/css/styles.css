@@ -1,0 +1,6 @@
+/* Minimal styles to support page layout */
+body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif}
+.btn{cursor:pointer}
+.sidebar{min-height:100vh}
+.card{background:#fff;padding:1rem;border-radius:8px;margin-bottom:1rem}
+
