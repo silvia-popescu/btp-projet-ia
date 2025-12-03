@@ -654,7 +654,7 @@
                 <li><a href="#logs" onclick="switchTab('logs')">📝 Logs</a></li>
             </ul>
             <div class="sidebar-logout">
-                <a href="index.html" style="text-align: center;">← Déconnexion</a>
+                <a href="#" onclick="handleLogout(event)" style="text-align: center;">← Déconnexion</a>
             </div>
         </div>
 
@@ -1405,10 +1405,24 @@
             document.querySelectorAll('.sidebar a').forEach(link => {
                 link.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
             
             // Load tab data if needed
-            if (tabName === 'users') loadUsers();
+            if (tabName === 'users') {
+                setTimeout(() => {
+                    loadUsers();
+                }, 100);
+            }
+        }
+
+        // Handle Logout
+        function handleLogout(event) {
+            event.preventDefault();
+            localStorage.removeItem('eduhouse_auth_token');
+            localStorage.removeItem('eduhouse_current_user');
+            window.location.href = 'index.html';
         }
 
         // Modal Functions
