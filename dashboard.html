@@ -1684,28 +1684,6 @@
 
             if (checkAuthentication()) {
                 showSection('dashboard-section');
-
-                // Parent-specific: fetch profile and children from server and display
-                const token = localStorage.getItem(AUTH_TOKEN_KEY);
-                const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
-                if (user && user.role === 'parent' && token) {
-                    fetch(API_BASE_URL + '/user/profile', { headers: { 'Authorization': 'Bearer ' + token } })
-                      .then(r => r.json())
-                      .then(p => {
-                        const me = p.user;
-                        fetch(API_BASE_URL + '/admin/users')
-                          .then(r => r.json())
-                          .then(list => {
-                             const kids = list.filter(u => (me.childrenIds || []).includes(u.id));
-                             if (kids.length) {
-                                 const card = document.createElement('div'); card.className='card'; card.innerHTML = `<div class="card-title">Öğrencileriniz</div>` + kids.map(k=>`<div style="padding:.5rem 0">${k.name} (${k.email})</div>`).join('');
-                                 document.querySelector('.main-content').prepend(card);
-                             }
-                          })
-                          .catch(()=>{});
-                      })
-                      .catch(()=>{});
-                }
             }
         });
 

@@ -1473,7 +1473,7 @@
 
             try {
                 console.log('Loading users from API...');
-                const response = await fetch(API_BASE + '/users', {
+                const response = await fetch(API_BASE + '/admin/users', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 
@@ -1549,7 +1549,7 @@
             if (!token) return;
 
             try {
-                const response = await fetch(API_BASE + '/users/' + userId, {
+                const response = await fetch(API_BASE + '/admin/user/' + userId, {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 
@@ -1587,7 +1587,7 @@
             if (!token) return;
 
             try {
-                const response = await fetch(API_BASE + '/users/' + userId, {
+                const response = await fetch(API_BASE + '/admin/user/' + userId, {
                     method: 'DELETE',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
@@ -1646,7 +1646,7 @@
             const role = document.getElementById('user-role').value;
             
             try {
-                const response = await fetch(API_BASE + '/users/' + userId, {
+                const response = await fetch(API_BASE + '/admin/user/' + userId, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1712,12 +1712,14 @@
 <script>
 // Admin: show all courses and messages
 (function(){
-  const token = localStorage.getItem('eduhouse_auth_token') || localStorage.getItem('eduhouse_auth_token');
+  const token = localStorage.getItem('eduhouse_auth_token');
   if(!token) return;
   const base = window.__API_BASE_URL__ || 'http://localhost:5000/api';
-  fetch(base + '/admin/classes', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{ if(list && list.length){ const c = document.createElement('div'); c.className='card'; c.innerHTML = '<div class="card-title">Tous les Cours</div>'+list.map(x=>`<div style="padding:.4rem 0">${x.name} (Teacher: ${x.teacher_id})</div>`).join(''); document.querySelector('.main-content').prepend(c); } }).catch(()=>{});
-  fetch(base + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{ if(list && list.length){ const m = document.createElement('div'); m.className='card'; m.innerHTML = '<div class="card-title">Tous les Messages</div>'+list.map(x=>`<div style="padding:.4rem 0">De ${x.sender_id} -> Reçu: ${x.content}</div>`).join(''); document.querySelector('.main-content').prepend(m); } }).catch(()=>{});
+  fetch(base + '/admin/classes', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(data=>{ if(data && data.classes && data.classes.length){ const c = document.createElement('div'); c.className='card'; c.innerHTML = '<div class="card-title">Tous les Cours</div>'+data.classes.map(x=>`<div style="padding:.4rem 0">${x.name} (Teacher: ${x.teacher_id})</div>`).join(''); document.querySelector('.main-content').prepend(c); } }).catch(()=>{});
+  fetch(base + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(data=>{ if(data && data.messages && data.messages.length){ const m = document.createElement('div'); m.className='card'; m.innerHTML = '<div class="card-title">Tous les Messages</div>'+data.messages.map(x=>`<div style="padding:.4rem 0">De ${x.sender_id} -> Reçu: ${x.content}</div>`).join(''); document.querySelector('.main-content').prepend(m); } }).catch(()=>{});
 })();
+
 </script>
 </body>
 </html>
+

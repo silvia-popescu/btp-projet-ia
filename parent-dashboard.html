@@ -392,18 +392,16 @@
 
         async function loadChildren() {
             const token = localStorage.getItem(AUTH_TOKEN_KEY);
-            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
 
             try {
-                const response = await fetch(API_BASE + '/users', {
+                const response = await fetch(API_BASE + '/parent/children', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
                 if (!response.ok) throw new Error('Failed to load children');
 
-                const users = await response.json();
-                const childrenIds = user.childrenIds || [];
-                const children = users.filter(u => childrenIds.includes(u.id));
+                const data = await response.json();
+                const children = data.children || [];
 
                 let html = '';
                 if (children.length === 0) {

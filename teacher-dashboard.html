@@ -1203,41 +1203,43 @@
 
             // Initialize sections
             showTeacherSection('dashboard-section');
-        });
 
-        // Sidebar link handlers
-        document.querySelectorAll('.sidebar a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && href.startsWith('#') && href !== '#') {
-                    e.preventDefault();
-                    const sectionId = sections[href];
-                    if (sectionId) {
-                        showTeacherSection(sectionId);
+            // Sidebar link handlers
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#') && href !== '#') {
+                        e.preventDefault();
+                        const sectionId = sections[href];
+                        if (sectionId) {
+                            showTeacherSection(sectionId);
+                        }
                     }
-                }
+                });
             });
         });
 
-        // Load teacher courses and messages
+                // Load teacher courses and messages
         (function(){
             const token = localStorage.getItem('eduhouse_auth_token');
             if(!token) return;
             const base = window.__API_BASE_URL__ || 'http://localhost:5000/api';
-            fetch(base + '/teacher/classes', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{
-                if(list && list.length){
-                    const card = document.createElement('div'); card.className='card'; card.innerHTML='<div class="card-title">Mes Cours</div>'+list.map(c=>`<div style="padding:.5rem 0">${c.title}</div>`).join('');
+            fetch(base + '/teacher/classes', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(data=>{
+                if(data && data.classes && data.classes.length){
+                    const card = document.createElement('div'); card.className='card'; card.innerHTML='<div class="card-title">Mes Cours</div>'+data.classes.map(c=>`<div style="padding:.5rem 0">${c.name}</div>`).join('');
                     document.querySelector('.main-content').prepend(card);
                 }
             }).catch(()=>{});
 
-            fetch(base + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(list=>{
-                if(list && list.length){
-                    const card = document.createElement('div'); card.className='card'; card.innerHTML='<div class="card-title">Messages Reçus</div>'+list.map(m=>`<div style="padding:.4rem 0">De: ${m.fromId} — ${m.content}</div>`).join('');
+            fetch(base + '/message/inbox', { headers: { 'Authorization': 'Bearer ' + token } }).then(r=>r.json()).then(data=>{
+                if(data && data.messages && data.messages.length){
+                    const card = document.createElement('div'); card.className='card'; card.innerHTML='<div class="card-title">Messages Reçus</div>'+data.messages.map(m=>`<div style="padding:.4rem 0">De: ${m.sender_id} — ${m.content}</div>`).join('');
                     document.querySelector('.main-content').prepend(card);
                 }
             }).catch(()=>{});
         })();
+
     </script>
 </body>
 </html>
+
