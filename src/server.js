@@ -837,10 +837,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n🏠 EduHOUSE Backend Server running on http://localhost:${PORT}`);
-    console.log(`\n📋 Demo Credentials:`);
-    console.log('  Student: student1@example.com | password: password123');
-    console.log('  Parent: parent1@example.com | password: password123');
-    console.log('  Teacher: teacher1@example.com | password: password123');
-    console.log('  Admin: admin@example.com | password: password123\n');
+    console.log(`\n🏠 EduHOUSE Backend Server running on http://localhost:${PORT}\n`);
 });
