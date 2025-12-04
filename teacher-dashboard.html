@@ -621,7 +621,7 @@
                 <li><a href="#settings" onclick="switchTab('settings'); return false;">⚙️ Paramètres</a></li>
             </ul>
             <div class="sidebar-logout">
-                <a href="#" onclick="handleLogout(event)" style="text-align: center;">← Déconnexion</a>
+                <a href="javascript:void(0)" onclick="handleLogout(event)" style="text-align: center;">← Déconnexion</a>
             </div>
         </div>
 
@@ -1200,8 +1200,8 @@
             console.log('Found sections:', allSections.length);
             
             allSections.forEach(section => {
-                section.style.display = 'none';
                 section.classList.remove('active');
+                section.style.display = '';
             });
             
             // Show the selected section
@@ -1210,8 +1210,8 @@
             console.log('Selecting section:', sectionId, 'found:', !!selectedSection);
             
             if (selectedSection) {
-                selectedSection.style.display = 'block';
                 selectedSection.classList.add('active');
+                selectedSection.style.display = '';
             }
             
             // Update active sidebar link
