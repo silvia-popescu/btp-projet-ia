@@ -769,7 +769,6 @@ app.get('/api/security/status', (req, res) => {
         }
     });
 });
-});
 
 app.get('/api/admin/statistics', verifyToken, requireRole('admin'), (req, res) => {
     try {
