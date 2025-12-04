@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const fs = require('fs');
 const db = require('./database');
+const security = require('./security');
 require('dotenv').config();
 
 const app = express();
@@ -26,26 +27,44 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '..')));
 
-// Security: Add security headers
+// Security: Add enterprise-grade security headers
 app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    Object.entries(security.SECURITY_CONFIG.HEADERS).forEach(([key, value]) => {
+        res.setHeader(key, value);
+    });
+    res.setHeader('X-Request-ID', require('crypto').randomBytes(8).toString('hex'));
     next();
 });
 
-// Middleware: Authenticate token
+// Security: Request logging middleware
+app.use((req, res, next) => {
+    req.startTime = Date.now();
+    req.clientIp = req.ip || req.connection.remoteAddress;
+    next();
+});
+
+// Middleware: Authenticate token (with blacklist check)
 function verifyToken(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         return res.status(401).json({ error: 'No token provided' });
     }
+    
+    // Check if token is blacklisted
+    if (security.isTokenBlacklisted(token)) {
+        return res.status(401).json({ error: 'Token has been revoked' });
+    }
+    
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
+        req.token = token;
         next();
     } catch (err) {
+        security.logAudit('TOKEN_VERIFICATION_FAILED', 'unknown', { 
+            error: err.message,
+            ipAddress: req.clientIp 
+        }, 'WARNING');
         return res.status(401).json({ error: 'Invalid token' });
     }
 }
@@ -76,42 +95,206 @@ function validatePassword(password) {
 app.post('/api/auth/register', (req, res) => {
     try {
         const { name, email, password, role = 'student' } = req.body;
+        
+        // Input validation
         if (!name || !email || !password) {
+            security.logAudit('REGISTRATION_FAILED', 'unknown', {
+                reason: 'Missing required fields',
+                ipAddress: req.clientIp
+            }, 'WARNING');
             return res.status(400).json({ error: 'Name, email, and password are required' });
         }
-        
-        // Security: Validate password strength
-        const passwordValidation = validatePassword(password);
-        if (!passwordValidation.valid) {
-            return res.status(400).json({ error: passwordValidation.error });
+
+        // Rate limiting check
+        const rateLimitKey = `register_${req.clientIp}`;
+        const rateLimit = security.checkRateLimit(
+            rateLimitKey,
+            security.SECURITY_CONFIG.RATE_LIMIT.LOGIN_MAX_ATTEMPTS,
+            security.SECURITY_CONFIG.RATE_LIMIT.LOGIN_WINDOW_MS
+        );
+
+        if (!rateLimit.allowed) {
+            security.logAudit('REGISTRATION_RATE_LIMITED', 'unknown', {
+                ipAddress: req.clientIp,
+                retryAfter: rateLimit.retryAfter
+            }, 'WARNING');
+            return res.status(429).json({
+                error: 'Too many registration attempts. Please try again later.',
+                retryAfter: rateLimit.retryAfter
+            });
         }
-        
-        const user = db.createUser(name, email, password, role);
-        const token = jwt.sign({ id: user.id, email: user.email, name: user.name, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
-        res.status(201).json({ message: 'Registration successful', token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+
+        // Sanitize inputs
+        try {
+            var sanitizedName = security.sanitizeInput(name, 'name');
+            var sanitizedEmail = security.sanitizeInput(email, 'email');
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        // Validate password strength (Level 5)
+        const passwordValidation = security.validatePasswordStrength(password);
+        if (!passwordValidation.valid) {
+            security.logAudit('REGISTRATION_WEAK_PASSWORD', 'unknown', {
+                reason: passwordValidation.errors.join('; '),
+                ipAddress: req.clientIp
+            }, 'INFO');
+            return res.status(400).json({
+                error: 'Password does not meet security requirements',
+                requirements: passwordValidation.errors
+            });
+        }
+
+        // Check for existing user
+        const existingUser = db.findUserByEmail(sanitizedEmail);
+        if (existingUser) {
+            security.logAudit('REGISTRATION_DUPLICATE_EMAIL', 'unknown', {
+                email: sanitizedEmail,
+                ipAddress: req.clientIp
+            }, 'WARNING');
+            return res.status(409).json({ error: 'Email already registered' });
+        }
+
+        // Create user
+        const user = db.createUser(sanitizedName, sanitizedEmail, password, role);
+        const token = jwt.sign(
+            { id: user.id, email: user.email, name: user.name, role: user.role },
+            JWT_SECRET,
+            { expiresIn: security.SECURITY_CONFIG.JWT.EXPIRATION }
+        );
+
+        // Reset rate limit on successful registration
+        security.resetRateLimit(rateLimitKey);
+
+        // Log successful registration
+        security.logAudit('REGISTRATION_SUCCESS', user.id, {
+            email: sanitizedEmail,
+            role: role,
+            ipAddress: req.clientIp
+        }, 'INFO');
+
+        res.status(201).json({
+            message: 'Registration successful',
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        security.logAudit('REGISTRATION_ERROR', 'unknown', {
+            error: err.message,
+            ipAddress: req.clientIp
+        }, 'CRITICAL');
+        res.status(500).json({ error: 'Registration failed' });
     }
 });
 
 app.post('/api/auth/login', (req, res) => {
     try {
         const { email, password } = req.body;
+
         if (!email || !password) {
+            security.logAudit('LOGIN_FAILED', 'unknown', {
+                reason: 'Missing credentials',
+                ipAddress: req.clientIp
+            }, 'WARNING');
             return res.status(400).json({ error: 'Email and password are required' });
         }
-        const user = db.findUserByEmail(email);
+
+        // Rate limiting - CRITICAL for brute force protection
+        const rateLimitKey = `login_${email}_${req.clientIp}`;
+        const rateLimit = security.checkRateLimit(
+            rateLimitKey,
+            security.SECURITY_CONFIG.RATE_LIMIT.LOGIN_MAX_ATTEMPTS,
+            security.SECURITY_CONFIG.RATE_LIMIT.LOGIN_WINDOW_MS
+        );
+
+        if (!rateLimit.allowed) {
+            security.logAudit('LOGIN_BRUTE_FORCE_ATTEMPT', 'unknown', {
+                email: email,
+                ipAddress: req.clientIp,
+                attemptsRemaining: rateLimit.remaining
+            }, 'CRITICAL');
+            return res.status(429).json({
+                error: 'Too many login attempts. Account temporarily locked.',
+                retryAfter: rateLimit.retryAfter
+            });
+        }
+
+        // Sanitize email
+        try {
+            var sanitizedEmail = security.sanitizeInput(email, 'email');
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        const user = db.findUserByEmail(sanitizedEmail);
         if (!user) {
+            // Don't reveal if email exists - security best practice
+            security.logAudit('LOGIN_INVALID_EMAIL', 'unknown', {
+                email: sanitizedEmail,
+                ipAddress: req.clientIp
+            }, 'INFO');
             return res.status(401).json({ error: 'Invalid email or password' });
         }
+
         const passwordMatch = bcrypt.compareSync(password, user.password);
         if (!passwordMatch) {
+            security.logAudit('LOGIN_INVALID_PASSWORD', user.id, {
+                email: sanitizedEmail,
+                ipAddress: req.clientIp,
+                attemptsRemaining: rateLimit.remaining
+            }, 'WARNING');
             return res.status(401).json({ error: 'Invalid email or password' });
         }
-        const token = jwt.sign({ id: user.id, email: user.email, name: user.name, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
-        res.json({ message: 'Login successful', token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+
+        // Successful login - reset rate limit
+        security.resetRateLimit(rateLimitKey);
+
+        const token = jwt.sign(
+            { id: user.id, email: user.email, name: user.name, role: user.role },
+            JWT_SECRET,
+            { expiresIn: security.SECURITY_CONFIG.JWT.EXPIRATION }
+        );
+
+        security.logAudit('LOGIN_SUCCESS', user.id, {
+            email: sanitizedEmail,
+            role: user.role,
+            ipAddress: req.clientIp
+        }, 'INFO');
+
+        res.json({
+            message: 'Login successful',
+            token,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        security.logAudit('LOGIN_ERROR', 'unknown', {
+            error: err.message,
+            ipAddress: req.clientIp
+        }, 'CRITICAL');
+        res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+// Logout endpoint with token blacklisting
+app.post('/api/auth/logout', verifyToken, (req, res) => {
+    try {
+        security.blacklistToken(req.token);
+        security.logAudit('LOGOUT', req.user.id, {
+            ipAddress: req.clientIp
+        }, 'INFO');
+        res.json({ message: 'Logged out successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Logout failed' });
     }
 });
 
