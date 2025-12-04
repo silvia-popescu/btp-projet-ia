@@ -1498,7 +1498,8 @@
                     throw new Error(`Failed to load users (${response.status}): ${errorData}`);
                 }
                 
-                const users = await response.json();
+                const data = await response.json();
+                const users = data.users || [];
                 console.log('Users loaded:', users.length);
                 displayUsers(users);
             } catch (error) {
@@ -1718,8 +1719,6 @@
                 window.location.href = 'index.html';
                 return;
             }
-            
-            loadUsers();
         });
     </script>
 

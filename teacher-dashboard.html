@@ -1302,6 +1302,423 @@
             console.log('Switched to tab:', tabName);
         }
 
+        // API Base URL
+        const API_BASE = window.__API_BASE_URL__ || 'http://localhost:5000/api';
+        const AUTH_TOKEN_KEY = 'eduhouse_auth_token';
+        const CURRENT_USER_KEY = 'eduhouse_current_user';
+
+        function getAuthToken() {
+            return localStorage.getItem(AUTH_TOKEN_KEY);
+        }
+
+        // Load teacher's classes/courses
+        async function loadTeacherClasses() {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/teacher/classes', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!response.ok) throw new Error('Failed to load classes');
+                
+                const data = await response.json();
+                const classes = data.classes || [];
+                
+                let html = '<div class="card"><div class="card-title">📚 Mes Cours</div>';
+                if (classes.length === 0) {
+                    html += '<p style="color: #999;">Aucun cours trouvé.</p>';
+                } else {
+                    classes.forEach(cls => {
+                        html += `
+                            <div class="course-management-card">
+                                <div class="course-header">
+                                    <div class="course-title">${cls.name}</div>
+                                    <div class="course-students">👥 ${cls.students?.length || 0} élèves</div>
+                                </div>
+                                <div class="course-body">
+                                    <div style="margin-bottom: 1rem;">${cls.description || 'Pas de description'}</div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button class="btn btn-primary btn-small" style="flex: 1;">Gérer</button>
+                                        <button class="btn btn-secondary btn-small" style="flex: 1;">Détails</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += '</div>';
+                const coursesSection = document.getElementById('courses-section');
+                if (coursesSection) {
+                    coursesSection.innerHTML = `
+                        <div class="dashboard-header"><h1>📚 Mes Cours</h1></div>
+                        ${html}
+                        <div class="card">
+                            <button class="btn btn-primary" onclick="openCreateClassModal()">➕ Créer un Nouveau Cours</button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading classes:', error);
+                const coursesSection = document.getElementById('courses-section');
+                if (coursesSection) {
+                    coursesSection.innerHTML = '<div class="card"><p style="color: red;">Erreur de chargement des cours</p></div>';
+                }
+            }
+        }
+
+        // Load teacher's classes schedule
+        async function loadTeacherSchedule() {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/teacher/classes', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!response.ok) throw new Error('Failed to load classes');
+                
+                const data = await response.json();
+                const classes = data.classes || [];
+                
+                let html = '<table class="attendance-table" style="width: 100%;"><thead><tr><th>Cours</th><th>Niveau</th><th>Élèves</th><th>Actions</th></tr></thead><tbody>';
+                if (classes.length === 0) {
+                    html += '<tr><td colspan="4" style="text-align: center;">Aucune classe trouvée</td></tr>';
+                } else {
+                    classes.forEach(cls => {
+                        html += `
+                            <tr>
+                                <td>${cls.name}</td>
+                                <td>${cls.level || 'N/A'}</td>
+                                <td>👥 ${cls.students?.length || 0}</td>
+                                <td>
+                                    <button class="btn btn-secondary btn-small">Détails</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+                html += '</tbody></table>';
+                
+                const classesSection = document.getElementById('classes-section');
+                if (classesSection) {
+                    classesSection.innerHTML = `
+                        <div class="dashboard-header"><h1>🎥 Mes Classes</h1></div>
+                        <div class="card">
+                            <div class="card-title">📋 Horaire de mes Classes</div>
+                            ${html}
+                        </div>
+                        <div class="card" style="margin-top: 1rem;">
+                            <button class="btn btn-primary" onclick="openScheduleClassModal()">➕ Planifier une Classe</button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+                const classesSection = document.getElementById('classes-section');
+                if (classesSection) {
+                    classesSection.innerHTML = '<div class="card"><p style="color: red;">Erreur de chargement</p></div>';
+                }
+            }
+        }
+
+        // Load teacher's students
+        async function loadTeacherStudents() {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/teacher/classes', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!response.ok) throw new Error('Failed to load classes');
+                
+                const data = await response.json();
+                const classes = data.classes || [];
+                
+                let allStudents = [];
+                for (const cls of classes) {
+                    if (cls.students) {
+                        allStudents.push(...cls.students);
+                    }
+                }
+                
+                let html = '<ul class="student-list">';
+                if (allStudents.length === 0) {
+                    html += '<li style="text-align: center; color: #999;">Aucun élève trouvé</li>';
+                } else {
+                    allStudents.forEach(student => {
+                        html += `
+                            <li class="student-item">
+                                <div class="student-info">
+                                    <div class="student-name">${student.name}</div>
+                                    <div class="student-status">Email: ${student.email}</div>
+                                </div>
+                                <div class="student-progress">
+                                    <button class="btn btn-secondary btn-small">Voir Notes</button>
+                                </div>
+                            </li>
+                        `;
+                    });
+                }
+                html += '</ul>';
+                
+                const studentsSection = document.getElementById('students-section');
+                if (studentsSection) {
+                    studentsSection.innerHTML = `
+                        <div class="dashboard-header"><h1>👥 Mes Élèves</h1></div>
+                        <div class="card">
+                            <div class="card-title">📊 Liste de mes Élèves</div>
+                            ${html}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+                const studentsSection = document.getElementById('students-section');
+                if (studentsSection) {
+                    studentsSection.innerHTML = '<div class="card"><p style="color: red;">Erreur de chargement</p></div>';
+                }
+            }
+        }
+
+        // Load assignments/homework
+        async function loadAssignments() {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/teacher/classes', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!response.ok) throw new Error('Failed to load classes');
+                
+                const data = await response.json();
+                const classes = data.classes || [];
+                
+                let html = '';
+                if (classes.length === 0) {
+                    html = '<p style="color: #999;">Aucun devoir trouvé</p>';
+                } else {
+                    classes.forEach(cls => {
+                        html += `
+                            <div class="assignment-item">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: bold; margin-bottom: 0.3rem;">Devoirs - ${cls.name}</div>
+                                    <div style="font-size: 0.9rem; color: #666;">Cliquez pour gérer les devoirs</div>
+                                </div>
+                                <div class="assignment-actions">
+                                    <button class="btn btn-primary btn-small" onclick="alert('Gestion des devoirs pour ' + '${cls.name}')">Gérer</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                const assignmentsSection = document.getElementById('assignments-section');
+                if (assignmentsSection) {
+                    assignmentsSection.innerHTML = `
+                        <div class="dashboard-header"><h1>📝 Devoirs & Évaluations</h1></div>
+                        <div class="card">
+                            <div class="card-title">📝 Mes Devoirs</div>
+                            ${html}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading assignments:', error);
+                const assignmentsSection = document.getElementById('assignments-section');
+                if (assignmentsSection) {
+                    assignmentsSection.innerHTML = '<div class="card"><p style="color: red;">Erreur de chargement</p></div>';
+                }
+            }
+        }
+
+        // Load messages
+        async function loadTeacherMessages() {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/message/inbox', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!response.ok) throw new Error('Failed to load messages');
+                
+                const data = await response.json();
+                const messages = data.messages || [];
+                
+                let html = '<ul style="list-style: none;">';
+                if (messages.length === 0) {
+                    html += '<li style="text-align: center; color: #999;">Aucun message</li>';
+                } else {
+                    messages.forEach(msg => {
+                        html += `
+                            <li style="padding: 1rem 0; border-bottom: 1px solid #eee;">
+                                <div><strong>De: ${msg.sender_id}</strong> <small style="color: #999;">Récemment</small></div>
+                                <div style="margin-top: 0.5rem; color: #555;">${msg.content || 'Aucun contenu'}</div>
+                            </li>
+                        `;
+                    });
+                }
+                html += '</ul>';
+                
+                const messagesSection = document.getElementById('messages-section');
+                if (messagesSection) {
+                    messagesSection.innerHTML = `
+                        <div class="dashboard-header"><h1>💬 Messages</h1></div>
+                        <div class="card">
+                            <div class="card-title">💬 Mes Messages</div>
+                            ${html}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                const messagesSection = document.getElementById('messages-section');
+                if (messagesSection) {
+                    messagesSection.innerHTML = '<div class="card"><p style="color: red;">Erreur de chargement</p></div>';
+                }
+            }
+        }
+
+        // Load attendance
+        async function loadAttendance() {
+            const token = getAuthToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(API_BASE + '/teacher/classes', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!response.ok) throw new Error('Failed to load classes');
+                
+                const data = await response.json();
+                const classes = data.classes || [];
+                
+                let html = '';
+                if (classes.length === 0) {
+                    html = '<p style="color: #999;">Aucune classe trouvée</p>';
+                } else {
+                    classes.forEach(cls => {
+                        html += `
+                            <div class="card" style="margin-bottom: 1rem;">
+                                <div class="card-title">${cls.name}</div>
+                                <table class="attendance-table" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Élève</th>
+                                            <th>Statut</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${cls.students && cls.students.length > 0 ? cls.students.map(s => `
+                                            <tr>
+                                                <td>${s.name}</td>
+                                                <td><span class="attendance-present">✓ Présent</span></td>
+                                                <td><button class="btn btn-secondary btn-small">Modifier</button></td>
+                                            </tr>
+                                        `).join('') : '<tr><td colspan="3">Aucun élève</td></tr>'}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    });
+                }
+                
+                const attendanceSection = document.getElementById('attendance-section');
+                if (attendanceSection) {
+                    attendanceSection.innerHTML = `
+                        <div class="dashboard-header"><h1>📋 Présences</h1></div>
+                        ${html}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                const attendanceSection = document.getElementById('attendance-section');
+                if (attendanceSection) {
+                    attendanceSection.innerHTML = '<div class="card"><p style="color: red;">Erreur de chargement</p></div>';
+                }
+            }
+        }
+
+        // Load reports
+        async function loadReports() {
+            const reportsSection = document.getElementById('reports-section');
+            if (reportsSection) {
+                reportsSection.innerHTML = `
+                    <div class="dashboard-header"><h1>📈 Rapports</h1></div>
+                    <div class="card">
+                        <div class="card-title">📈 Mes Rapports</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                            <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                                <div style="font-weight: bold; margin-bottom: 0.5rem;">Rapport d'Assiduité</div>
+                                <small style="color: #666;">Voir le taux de présence par classe</small>
+                                <div style="margin-top: 1rem;">
+                                    <button class="btn btn-primary btn-small" style="width: 100%;">Générer</button>
+                                </div>
+                            </div>
+                            <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                                <div style="font-weight: bold; margin-bottom: 0.5rem;">Rapport de Performance</div>
+                                <small style="color: #666;">Notes et progression des élèves</small>
+                                <div style="margin-top: 1rem;">
+                                    <button class="btn btn-primary btn-small" style="width: 100%;">Générer</button>
+                                </div>
+                            </div>
+                            <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                                <div style="font-weight: bold; margin-bottom: 0.5rem;">Rapport Pédagogique</div>
+                                <small style="color: #666;">Analyse du programme et contenus</small>
+                                <div style="margin-top: 1rem;">
+                                    <button class="btn btn-primary btn-small" style="width: 100%;">Générer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load settings
+        async function loadSettings() {
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+            const settingsSection = document.getElementById('settings-section');
+            if (settingsSection) {
+                settingsSection.innerHTML = `
+                    <div class="dashboard-header"><h1>⚙️ Paramètres</h1></div>
+                    <div class="card">
+                        <div class="card-title">⚙️ Paramètres du Compte</div>
+                        <div style="padding: 1rem;">
+                            <h3 style="margin-bottom: 1rem;">Informations Personnelles</h3>
+                            <p><strong>Nom:</strong> ${user?.name || 'Non disponible'}</p>
+                            <p><strong>Email:</strong> ${user?.email || 'Non disponible'}</p>
+                            <p><strong>Rôle:</strong> Enseignant</p>
+                            <div style="margin-top: 2rem;">
+                                <h3 style="margin-bottom: 1rem;">Sécurité</h3>
+                                <button class="btn btn-primary" onclick="alert('Fonction en développement')">Changer le Mot de Passe</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Update switchTab to load data when clicking
+        const originalSwitchTab = switchTab;
+        window.switchTab = function(tabName) {
+            originalSwitchTab(tabName);
+            
+            // Load tab data if needed
+            if (tabName === 'courses') loadTeacherClasses();
+            if (tabName === 'classes') loadTeacherSchedule();
+            if (tabName === 'students') loadTeacherStudents();
+            if (tabName === 'assignments') loadAssignments();
+            if (tabName === 'messages') loadTeacherMessages();
+            if (tabName === 'attendance') loadAttendance();
+            if (tabName === 'reports') loadReports();
+            if (tabName === 'settings') loadSettings();
+        };
+
         // Sidebar Navigation with section visibility
         const sections = {
             '#dashboard': 'dashboard-section',

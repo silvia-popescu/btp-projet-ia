@@ -388,6 +388,8 @@
             if (tabName === 'children') loadChildren();
             if (tabName === 'courses') loadCourses();
             if (tabName === 'messages') loadMessages();
+            if (tabName === 'progress') loadProgress();
+            if (tabName === 'settings') loadSettings();
         }
 
         async function loadChildren() {
@@ -431,30 +433,42 @@
             const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
             try {
-                const response = await fetch(API_BASE + '/courses', {
+                // First, get children
+                const childrenResp = await fetch(API_BASE + '/parent/children', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
+                if (!childrenResp.ok) throw new Error('Failed to load children');
+                const childrenData = await childrenResp.json();
+                const children = childrenData.children || [];
 
-                if (!response.ok) throw new Error('Failed to load courses');
+                // Then get classes for each child
+                let allCourses = [];
+                for (const child of children) {
+                    const coursesResp = await fetch(API_BASE + `/parent/child/${child.id}/classes`, {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    if (coursesResp.ok) {
+                        const coursesData = await coursesResp.json();
+                        allCourses.push(...(coursesData.classes || []));
+                    }
+                }
 
-                const courses = await response.json();
                 let html = '';
-
-                if (!courses || courses.length === 0) {
+                if (allCourses.length === 0) {
                     html = '<li style="color: #999; text-align: center;">Aucun cours trouvé.</li>';
                 } else {
-                    courses.forEach(course => {
+                    allCourses.forEach(course => {
                         html += `
                             <li class="course-item">
                                 <div class="course-title">${course.name || 'Cours'}</div>
-                                <div class="course-teacher">Enseignant: ${course.teacher || 'Non spécifié'}</div>
+                                <div class="course-teacher">Enseignant: ${course.teacher_name || 'Non spécifié'}</div>
                             </li>
                         `;
                     });
                 }
 
                 document.getElementById('courses-list').innerHTML = html;
-                document.getElementById('courses-count').textContent = courses ? courses.length : 0;
+                document.getElementById('courses-count').textContent = allCourses.length;
             } catch (error) {
                 console.error('Error loading courses:', error);
                 document.getElementById('courses-list').innerHTML = '<li style="color: red;">Erreur de chargement</li>';
@@ -465,23 +479,24 @@
             const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
             try {
-                const response = await fetch(API_BASE + '/messages', {
+                const response = await fetch(API_BASE + '/message/inbox', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
 
                 if (!response.ok) throw new Error('Failed to load messages');
 
-                const messages = await response.json();
+                const data = await response.json();
+                const messages = data.messages || [];
                 let html = '';
 
-                if (!messages || messages.length === 0) {
+                if (messages.length === 0) {
                     html = '<li style="color: #999; text-align: center;">Aucun message reçu.</li>';
                 } else {
                     messages.forEach(msg => {
                         html += `
                             <li class="message-item">
                                 <div>
-                                    <span class="message-sender">De: ${msg.fromId || 'Système'}</span>
+                                    <span class="message-sender">De: ${msg.sender_id || 'Système'}</span>
                                     <span class="message-time">Récemment</span>
                                 </div>
                                 <div class="message-content">${msg.content || 'Aucun contenu'}</div>
@@ -497,6 +512,77 @@
             }
         }
 
+        async function loadProgress() {
+            const token = localStorage.getItem(AUTH_TOKEN_KEY);
+
+            try {
+                // Get children
+                const childrenResp = await fetch(API_BASE + '/parent/children', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!childrenResp.ok) throw new Error('Failed to load children');
+                const childrenData = await childrenResp.json();
+                const children = childrenData.children || [];
+
+                let html = '';
+                if (children.length === 0) {
+                    html = '<p style="color: #999; text-align: center;">Aucun enfant associé.</p>';
+                } else {
+                    for (const child of children) {
+                        // Get grades
+                        const gradesResp = await fetch(API_BASE + `/parent/child/${child.id}/grades`, {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        const gradesData = gradesResp.ok ? await gradesResp.json() : { grades: [] };
+                        const grades = gradesData.grades || [];
+                        const avgGrade = grades.length > 0 
+                            ? (grades.reduce((sum, g) => sum + (g.grade || 0), 0) / grades.length).toFixed(2)
+                            : 'N/A';
+
+                        // Get attendance
+                        const attendanceResp = await fetch(API_BASE + `/parent/child/${child.id}/attendance`, {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        const attendanceData = attendanceResp.ok ? await attendanceResp.json() : { attendance: [] };
+                        const attendance = attendanceData.attendance || [];
+                        const attendanceRate = attendance.length > 0
+                            ? Math.round((attendance.filter(a => a.status === 'present').length / attendance.length) * 100)
+                            : 'N/A';
+
+                        html += `
+                            <div class="child-card" style="margin-bottom: 1rem;">
+                                <div style="font-weight: bold; margin-bottom: 0.5rem;">${child.name}</div>
+                                <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.3rem;">
+                                    📊 Moyenne des notes: <strong>${avgGrade}</strong>/20
+                                </div>
+                                <div style="font-size: 0.9rem; color: #666;">
+                                    ✓ Taux de présence: <strong>${attendanceRate}%</strong>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                const progressCard = document.querySelector('#progress-tab .card');
+                if (progressCard) {
+                    progressCard.innerHTML = '<div class="card-title">📈 Progression Académique</div>' + html;
+                }
+            } catch (error) {
+                console.error('Error loading progress:', error);
+                const progressCard = document.querySelector('#progress-tab .card');
+                if (progressCard) {
+                    progressCard.innerHTML = '<div class="card-title">📈 Progression Académique</div><p style="color: red;">Erreur de chargement</p>';
+                }
+            }
+        }
+
+        function loadSettings() {
+            const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+            if (user) {
+                document.getElementById('settings-email').textContent = user.email || 'Non disponible';
+            }
+        }
+
         function handleLogout() {
             localStorage.removeItem(AUTH_TOKEN_KEY);
             localStorage.removeItem(CURRENT_USER_KEY);
@@ -507,6 +593,11 @@
         // Initialize on page load
         window.addEventListener('load', function() {
             if (checkAuthentication()) {
+                const user = JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null');
+                if (user) {
+                    document.getElementById('header-name').textContent = `Bienvenue, ${user.name}`;
+                    document.getElementById('header-email').textContent = user.email;
+                }
                 loadChildren();
             }
         });

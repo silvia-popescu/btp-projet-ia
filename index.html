@@ -462,6 +462,10 @@
             transition: border-color 0.3s;
         }
 
+        .form-group input[type="password"] {
+            padding-right: 2.5rem;
+        }
+
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
@@ -707,7 +711,10 @@
                 </div>
                 <div class="form-group">
                     <label for="login-password">Mot de passe</label>
-                    <input type="password" id="login-password" required>
+                    <div style="position: relative;">
+                        <input type="password" id="login-password" required>
+                        <span onclick="togglePasswordVisibility('login-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem;">👁️</span>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
                 <p style="text-align: center; margin-top: 1rem; color: #666;">
@@ -738,7 +745,10 @@
                 </div>
                 <div class="form-group">
                     <label for="signup-password">Mot de passe</label>
-                    <input type="password" id="signup-password" required>
+                    <div style="position: relative;">
+                        <input type="password" id="signup-password" required>
+                        <span onclick="togglePasswordVisibility('signup-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem;">👁️</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="signup-role">Rôle</label>
@@ -790,6 +800,20 @@
                     break;
                 default:
                     window.location.href = 'index.html';
+            }
+        }
+
+        // Password Visibility Toggle
+        function togglePasswordVisibility(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = event.target;
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.textContent = '🙈';
+            } else {
+                field.type = 'password';
+                icon.textContent = '👁️';
             }
         }
 
