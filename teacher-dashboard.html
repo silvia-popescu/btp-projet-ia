@@ -622,7 +622,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <!-- Dashboard Section (Default) -->
-            <div id="dashboard-section" class="content-section active" style="display: block;">
+            <div id="dashboard-section" class="content-section active">
                 <!-- Header -->
                 <div class="dashboard-header">
                 <div class="header-left">
@@ -1299,6 +1299,18 @@
                 mainContent.scrollTop = 0;
             }
             
+            // Load tab data if needed
+            setTimeout(() => {
+                if (tabName === 'courses') loadTeacherClasses();
+                if (tabName === 'classes') loadTeacherSchedule();
+                if (tabName === 'students') loadTeacherStudents();
+                if (tabName === 'assignments') loadAssignments();
+                if (tabName === 'messages') loadTeacherMessages();
+                if (tabName === 'attendance') loadAttendance();
+                if (tabName === 'reports') loadReports();
+                if (tabName === 'settings') loadSettings();
+            }, 50);
+            
             console.log('Switched to tab:', tabName);
         }
 
@@ -1702,22 +1714,6 @@
                 `;
             }
         }
-
-        // Update switchTab to load data when clicking
-        const originalSwitchTab = switchTab;
-        window.switchTab = function(tabName) {
-            originalSwitchTab(tabName);
-            
-            // Load tab data if needed
-            if (tabName === 'courses') loadTeacherClasses();
-            if (tabName === 'classes') loadTeacherSchedule();
-            if (tabName === 'students') loadTeacherStudents();
-            if (tabName === 'assignments') loadAssignments();
-            if (tabName === 'messages') loadTeacherMessages();
-            if (tabName === 'attendance') loadAttendance();
-            if (tabName === 'reports') loadReports();
-            if (tabName === 'settings') loadSettings();
-        };
 
         // Sidebar Navigation with section visibility
         const sections = {
