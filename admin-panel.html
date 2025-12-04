@@ -781,7 +781,7 @@
                     </div>
 
                     <div class="table-container">
-                        <table>
+                        <table id="usersTable">
                             <thead>
                                 <tr>
                                     <th>Utilisateur</th>
@@ -792,7 +792,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="usersTableBody">
                                 <tr>
                                     <td>
                                         <div class="user-info">
@@ -923,7 +923,7 @@
                     </div>
 
                     <div class="table-container">
-                        <table>
+                        <table id="coursesTable">
                             <thead>
                                 <tr>
                                     <th>Titre du Cours</th>
@@ -935,7 +935,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="coursesTableBody">
                                 <tr>
                                     <td><strong>Équations du 2nd Degré</strong></td>
                                     <td>Mathématiques</td>
@@ -1016,7 +1016,7 @@
                     </div>
 
                     <div class="table-container">
-                        <table>
+                        <table id="classesTable">
                             <thead>
                                 <tr>
                                     <th>Titre</th>
@@ -1028,7 +1028,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="classesTableBody">
                                 <tr>
                                     <td><strong>Équations - Leçon 1</strong></td>
                                     <td>Équations du 2nd Degré</td>
@@ -1100,7 +1100,7 @@
                     </div>
 
                     <div class="table-container">
-                        <table>
+                        <table id="paymentsTable">
                             <thead>
                                 <tr>
                                     <th>ID Transaction</th>
@@ -1112,7 +1112,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="payments-table-body">
+                            <tbody id="paymentsTableBody">
                                 <tr>
                                     <td>#TXN-2024-0001</td>
                                     <td>Jean Dupont</td>
@@ -1696,12 +1696,12 @@
 
         // Display users in table
         function displayUsers(users) {
-            const tbody = document.querySelector('table tbody');
+            const tbody = document.getElementById('usersTableBody');
             if (!tbody) {
-                console.error('Table tbody not found in DOM');
+                console.error('Users table tbody not found in DOM');
                 // Try to find it after a short delay
                 setTimeout(() => {
-                    const tbody2 = document.querySelector('table tbody');
+                    const tbody2 = document.getElementById('usersTableBody');
                     if (tbody2) displayUsers(users);
                 }, 500);
                 return;
