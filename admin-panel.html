@@ -632,36 +632,36 @@
         <div class="sidebar">
             <div class="logo">🏠 EduHOUSE Admin</div>
             <ul>
-                <li><a href="#dashboard" class="active" onclick="switchTab('dashboard')">📊 Tableau de Bord</a></li>
+                <li><a href="javascript:void(0)" class="active" onclick="switchTab(event, 'dashboard')">📊 Tableau de Bord</a></li>
                 
                 <li class="sidebar-section">
                     <div class="sidebar-section-title">Gestion</div>
                 </li>
-                <li><a href="#users" onclick="switchTab('users')">👥 Utilisateurs</a></li>
-                <li><a href="#courses" onclick="switchTab('courses')">📚 Cours</a></li>
-                <li><a href="#classes" onclick="switchTab('classes')">🎥 Classes</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'users')">👥 Utilisateurs</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'courses')">📚 Cours</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'classes')">🎥 Classes</a></li>
                 
                 <li class="sidebar-section">
                     <div class="sidebar-section-title">Approbations</div>
                 </li>
-                <li><a href="#requests" onclick="switchTab('requests')">✅ Demandes</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'requests')">✅ Demandes</a></li>
                 
                 <li class="sidebar-section">
                     <div class="sidebar-section-title">Finances</div>
                 </li>
-                <li><a href="#payments" onclick="switchTab('payments')">💳 Paiements</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'payments')">💳 Paiements</a></li>
                 
                 <li class="sidebar-section">
                     <div class="sidebar-section-title">Rapports</div>
                 </li>
-                <li><a href="#reports" onclick="switchTab('reports')">📈 Rapports</a></li>
-                <li><a href="#analytics" onclick="switchTab('analytics')">📊 Analytique</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'reports')">📈 Rapports</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'analytics')">📊 Analytique</a></li>
                 
                 <li class="sidebar-section">
                     <div class="sidebar-section-title">Système</div>
                 </li>
-                <li><a href="#settings" onclick="switchTab('settings')">⚙️ Paramètres</a></li>
-                <li><a href="#logs" onclick="switchTab('logs')">📝 Logs</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'settings')">⚙️ Paramètres</a></li>
+                <li><a href="javascript:void(0)" onclick="switchTab(event, 'logs')">📝 Logs</a></li>
             </ul>
             <div class="sidebar-logout">
                 <a href="#" onclick="handleLogout(event)" style="text-align: center;">← Déconnexion</a>
@@ -1568,7 +1568,12 @@
     </div>
 
     <script>
-        function switchTab(tabName) {
+        function switchTab(evt, tabName) {
+            if (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            }
+            
             // Hide all tab contents
             const contents = document.getElementsByClassName('tab-content');
             for (let content of contents) {
@@ -1576,14 +1581,17 @@
             }
 
             // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+            const tabElement = document.getElementById(tabName);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
 
             // Update sidebar active link
             document.querySelectorAll('.sidebar a').forEach(link => {
                 link.classList.remove('active');
             });
-            if (event && event.target) {
-                event.target.classList.add('active');
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
             }
             
             // Load tab data if needed
