@@ -1194,24 +1194,24 @@
         // Switch Tab Function - Simplified
         function switchTab(tabName) {
             console.log('switchTab called with:', tabName);
-            
+
             // Hide all content sections
             const allSections = document.querySelectorAll('.content-section');
             console.log('Found sections:', allSections.length);
-            
+
             allSections.forEach(section => {
                 section.classList.remove('active');
-                section.style.display = '';
+                section.style.display = 'none';
             });
-            
+
             // Show the selected section
             const sectionId = tabName + '-section';
             const selectedSection = document.getElementById(sectionId);
             console.log('Selecting section:', sectionId, 'found:', !!selectedSection);
-            
+
             if (selectedSection) {
                 selectedSection.classList.add('active');
-                selectedSection.style.display = '';
+                selectedSection.style.display = 'block';
             }
             
             // Update active sidebar link
