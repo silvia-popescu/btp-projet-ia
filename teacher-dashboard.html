@@ -1264,20 +1264,27 @@
             window.location.href = 'index.html';
         }
 
-        // Switch Tab Function - Now with proper section showing/hiding
+        // Switch Tab Function - Simplified
         function switchTab(tabName) {
+            console.log('switchTab called with:', tabName);
+            
             // Hide all content sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
+            const allSections = document.querySelectorAll('.content-section');
+            console.log('Found sections:', allSections.length);
+            
+            allSections.forEach(section => {
                 section.style.display = 'none';
+                section.classList.remove('active');
             });
             
             // Show the selected section
             const sectionId = tabName + '-section';
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.classList.add('active');
-                section.style.display = 'block';
+            const selectedSection = document.getElementById(sectionId);
+            console.log('Selecting section:', sectionId, 'found:', !!selectedSection);
+            
+            if (selectedSection) {
+                selectedSection.style.display = 'block';
+                selectedSection.classList.add('active');
             }
             
             // Update active sidebar link
@@ -1285,22 +1292,17 @@
                 link.classList.remove('active');
             });
             
-            // Find and activate the clicked link
-            const links = document.querySelectorAll('.sidebar a');
-            links.forEach(link => {
-                if (link.getAttribute('href') === '#' + tabName) {
-                    link.classList.add('active');
-                }
-            });
-            
-            // Scroll to top
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) {
-                mainContent.scrollTop = 0;
+            const clickedLink = document.querySelector(`.sidebar a[href="#${tabName}"]`);
+            if (clickedLink) {
+                clickedLink.classList.add('active');
             }
+            
+            // Scroll page to top
+            window.scrollTo(0, 0);
             
             // Load tab data if needed
             setTimeout(() => {
+                console.log('Loading data for tab:', tabName);
                 if (tabName === 'courses') loadTeacherClasses();
                 if (tabName === 'classes') loadTeacherSchedule();
                 if (tabName === 'students') loadTeacherStudents();
@@ -1309,9 +1311,7 @@
                 if (tabName === 'attendance') loadAttendance();
                 if (tabName === 'reports') loadReports();
                 if (tabName === 'settings') loadSettings();
-            }, 50);
-            
-            console.log('Switched to tab:', tabName);
+            }, 100);
         }
 
         // API Base URL
