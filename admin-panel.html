@@ -642,6 +642,11 @@
                 <li><a href="#classes" onclick="switchTab('classes')">🎥 Classes</a></li>
                 
                 <li class="sidebar-section">
+                    <div class="sidebar-section-title">Finances</div>
+                </li>
+                <li><a href="#payments" onclick="switchTab('payments')">💳 Paiements</a></li>
+                
+                <li class="sidebar-section">
                     <div class="sidebar-section-title">Rapports</div>
                 </li>
                 <li><a href="#reports" onclick="switchTab('reports')">📈 Rapports</a></li>
@@ -1061,6 +1066,119 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments Tab -->
+            <div id="payments" class="tab-content">
+                <div class="card">
+                    <div class="card-title">💳 Gestion des Paiements</div>
+                    
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Rechercher par utilisateur, transaction ID...">
+                        <select class="filter-select">
+                            <option>Tous les statuts</option>
+                            <option>Complété</option>
+                            <option>En attente</option>
+                            <option>Échoué</option>
+                            <option>Remboursé</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>Tous les types</option>
+                            <option>Abonnement</option>
+                            <option>Cours</option>
+                            <option>Classe</option>
+                            <option>Autres</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="alert('Ajouter un paiement manuel')">➕ Ajouter</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Transaction</th>
+                                    <th>Utilisateur</th>
+                                    <th>Montant</th>
+                                    <th>Type</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-table-body">
+                                <tr>
+                                    <td>#TXN-2024-0001</td>
+                                    <td>Jean Dupont</td>
+                                    <td>49.99 €</td>
+                                    <td>Abonnement Mensuel</td>
+                                    <td><span class="badge badge-active">Complété</span></td>
+                                    <td>29/10/2024</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-secondary btn-small" onclick="alert('Détails...')">Détails</button>
+                                            <button class="btn btn-secondary btn-small" onclick="alert('Reçu...')">Reçu</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#TXN-2024-0002</td>
+                                    <td>Emma Rousseau</td>
+                                    <td>29.99 €</td>
+                                    <td>Cours Unique</td>
+                                    <td><span class="badge badge-active">Complété</span></td>
+                                    <td>28/10/2024</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-secondary btn-small" onclick="alert('Détails...')">Détails</button>
+                                            <button class="btn btn-secondary btn-small" onclick="alert('Reçu...')">Reçu</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#TXN-2024-0003</td>
+                                    <td>Marie Claude</td>
+                                    <td>99.99 €</td>
+                                    <td>Classe VIP</td>
+                                    <td><span class="badge badge-active">Complété</span></td>
+                                    <td>27/10/2024</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-secondary btn-small" onclick="alert('Détails...')">Détails</button>
+                                            <button class="btn btn-secondary btn-small" onclick="alert('Reçu...')">Reçu</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment Statistics -->
+                <div class="card">
+                    <div class="card-title">📊 Statistiques Paiements</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #2ecc71;">Revenus Aujourd'hui</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #2ecc71; margin-top: 0.5rem;">1,250 €</div>
+                            <small style="color: #666;">5 transactions</small>
+                        </div>
+                        <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #3498db;">Revenus Ce Mois</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #3498db; margin-top: 0.5rem;">18,750 €</div>
+                            <small style="color: #666;">156 transactions</small>
+                        </div>
+                        <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #f39c12;">Paiements En Attente</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #f39c12; margin-top: 0.5rem;">3</div>
+                            <small style="color: #666;">2,150 € au total</small>
+                        </div>
+                        <div style="padding: 1rem; background: #f9f9f9; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #e74c3c;">Remboursements</div>
+                            <div style="font-size: 2rem; font-weight: bold; color: #e74c3c; margin-top: 0.5rem;">350 €</div>
+                            <small style="color: #666;">2 ce mois-ci</small>
+                        </div>
                     </div>
                 </div>
             </div>
