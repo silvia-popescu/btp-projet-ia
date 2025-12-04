@@ -1,0 +1,243 @@
+================================================================================
+              COMPLETE USER WORKFLOWS & APPROVAL SYSTEM
+================================================================================
+
+1. HOW PARENT ADDS CHILD
+─────────────────────────────────────────────────────────────────────────────
+
+❌ PARENT CANNOT ADD CHILD DIRECTLY
+   └─ Only ADMIN can add children to parents
+   └─ Stored in: parent_child.json
+
+PROCESS:
+  STEP 1: Parent creates account
+    • Go to http://localhost:5000
+    • Click 'Sign Up'
+    • Fill: Name, Email, Password
+    • Creates entry in users.json
+
+  STEP 2: ADMIN adds child to parent
+    • Admin logs in: admin@example.com / password123
+    • Goes to: Admin Panel → Users
+    • Finds the parent
+    • Clicks 'Add Child' or 'Link Child'
+    • Selects student to link
+    • Saves to parent_child.json
+
+  STEP 3: Parent can now see child
+    • Parent logs in
+    • Dashboard shows 'Mes Enfants' (My Children)
+    • Can see child's: Grades, Attendance, Classes, Homework
+
+================================================================================
+
+2. HOW TEACHER CREATES LESSONS
+─────────────────────────────────────────────────────────────────────────────
+
+✅ TEACHER CAN CREATE LESSONS DIRECTLY
+   └─ No approval needed
+   └─ Stored in: classes.json & lessons.json
+
+PROCESS:
+  STEP 1: Teacher logs in
+    • Email: teacher@example.com / password123
+    • Goes to: Teacher Dashboard
+
+  STEP 2: Create class/course
+    • Dashboard → 'Mes Cours' (My Classes)
+    • Click 'Créer Nouveau Cours'
+    • Fill: Name, Level, Description
+    • Saves to classes.json
+
+  STEP 3: Create lessons
+    • In same dashboard
+    • Click 'Ajouter Leçon' (Add Lesson)
+    • Fill: Title, Content, Date
+    • Saves to lessons.json
+
+  STEP 4: Create homework
+    • Dashboard → 'Devoirs & Évaluations'
+    • Click 'Créer Devoir'
+    • Fill: Title, Description, Deadline, Class
+    • Saves to homework.json
+
+  STEP 5: Students see homework
+    • Auto-appear in student dashboard
+    • Notification sent automatically
+    • Students can submit work
+
+================================================================================
+
+3. HOW PAYMENTS WORK
+─────────────────────────────────────────────────────────────────────────────
+
+✅ ADMIN CREATES, PARENT PAYS, ADMIN APPROVES
+   └─ Stored in: payments.json
+
+PROCESS:
+  STEP 1: Admin creates payment request
+    • Admin logs in
+    • Goes to: Admin Panel → Paiements (Payments)
+    • Click 'Créer Demande' (Create Request)
+    • Fill: Parent, Amount, Description, Due Date
+    • Saves to payments.json with status: 'Pending'
+
+  STEP 2: Parent sees payment request
+    • Parent logs in
+    • Dashboard → 'Paiements' (Payments)
+    • Sees pending payment request with amount, description, deadline
+
+  STEP 3: Parent pays
+    • Click 'Effectuer Paiement' (Make Payment)
+    • Can pay by: Bank transfer, Card, Check
+    • Mark as paid in system
+
+  STEP 4: Admin approves payment
+    • Admin sees payment marked as 'Paid'
+    • Admin Panel → Paiements
+    • Click 'Valider' (Approve)
+    • Status changes to: 'Approuvé'
+    • Parent sees confirmation
+
+================================================================================
+
+4. HOW MESSAGES WORK
+─────────────────────────────────────────────────────────────────────────────
+
+✅ ANYONE CAN SEND MESSAGES DIRECTLY
+   └─ No approval needed
+   └─ Real-time conversation
+   └─ Stored in: messages.json
+
+PROCESS:
+  STEP 1: User sends message
+    • Log in (any role)
+    • Dashboard → 'Messages'
+    • Click 'Nouveau Message' (New Message)
+    • Select recipient
+    • Type message
+    • Click 'Envoyer' (Send)
+    • Saved to messages.json
+
+  STEP 2: Recipient receives
+    • See notification
+    • Dashboard → 'Messages'
+    • See message from sender
+
+  STEP 3: Reply
+    • Click 'Répondre' (Reply)
+    • Type response
+    • Send
+    • Conversation appears for both
+
+  STEP 4: Conversation history
+    • Both see full message thread
+    • See: Sender name, Timestamp, Full text
+    • Can archive conversation
+
+================================================================================
+
+5. WHO APPROVES WHAT?
+─────────────────────────────────────────────────────────────────────────────
+
+✅ ADMIN APPROVES:
+  ✓ Adding child to parent (parent_child.json)
+  ✓ Enrolling students in classes (enrollments.json)
+  ✓ Payment approvals (payments.json)
+  ✓ User account creation (users.json)
+
+✅ TEACHER APPROVES:
+  ✓ Grading homework (grades.json)
+  ✓ Marking attendance (attendance.json)
+
+❌ NO APPROVAL NEEDED FOR:
+  ✓ Messages (direct send/receive)
+  ✓ Viewing own data (student sees their grades)
+  ✓ Creating lessons (teacher creates directly)
+
+================================================================================
+
+6. PERMISSION MATRIX
+─────────────────────────────────────────────────────────────────────────────
+
+Action                    | Élève | Parent | Prof  | Admin
+──────────────────────────┼───────┼────────┼───────┼────────
+Ajouter enfant           | ❌    | ❌     | ❌    | ✅
+Créer classe             | ❌    | ❌     | ✅    | ✅
+Inscrire élève           | ❌    | ❌     | ❌    | ✅
+Créer devoir             | ❌    | ❌     | ✅    | ✅
+Soumettre devoir         | ✅    | ❌     | ❌    | ❌
+Noter travail            | ❌    | ❌     | ✅    | ✅
+Marquer présence         | ❌    | ❌     | ✅    | ✅
+Créer paiement           | ❌    | ❌     | ❌    | ✅
+Approuver paiement       | ❌    | ❌     | ❌    | ✅
+Envoyer message          | ✅    | ✅     | ✅    | ✅
+Voir ses données         | ✅    | ✅*    | ✅    | ✅
+Voir données enfant      | ❌    | ✅*    | ❌    | ✅
+Gérer utilisateurs       | ❌    | ❌     | ❌    | ✅
+
+*Parent peut voir données enfant SEULEMENT si lié par admin
+
+================================================================================
+
+7. DATA FILES & WHO CREATES/APPROVES
+─────────────────────────────────────────────────────────────────────────────
+
+Fichier                  | Qui Crée           | Qui Approuve
+────────────────────────┼────────────────────┼──────────────────────
+users.json              | Admin / User       | Auto
+parent_child.json       | Admin              | Admin
+classes.json            | Teacher            | Auto
+enrollments.json        | Admin              | Admin
+homework.json           | Teacher            | Auto
+homework_submissions.json| Student           | Auto
+grades.json             | Teacher            | Auto (Teacher rates)
+attendance.json         | Teacher            | Auto (Teacher marks)
+payments.json           | Admin              | Admin (validates)
+messages.json           | All                | Auto (Direct send)
+lessons.json            | Teacher            | Auto
+
+================================================================================
+
+QUICK SUMMARY
+─────────────────────────────────────────────────────────────────────────────
+
+📝 HOW TO ADD CHILD:
+   Parent creates account → Admin links child in admin panel
+
+📚 HOW TO CREATE LESSONS:
+   Teacher logs in → Creates class/lessons directly (no approval)
+
+💰 HOW PAYMENTS WORK:
+   Admin creates request → Parent pays → Admin approves
+
+💬 HOW MESSAGES WORK:
+   Anyone can message anyone directly (no approval)
+
+⚙️  APPROVALS:
+   Admin: Adds children, enrolls students, approves payments
+   Teacher: Grades homework, marks attendance
+   Others: Direct access, no approval needed
+
+================================================================================
+
+DEMO CREDENTIALS
+─────────────────────────────────────────────────────────────────────────────
+
+Admin:
+  Email: admin@example.com
+  Password: password123
+
+Teachers:
+  Email: teacher1@example.com / teacher2@example.com
+  Password: password123
+
+Parents:
+  Email: parent1@example.com / parent2@example.com
+  Password: password123
+
+Students:
+  Email: student1@example.com / student2@example.com / student3@example.com
+  Password: password123
+
+================================================================================
