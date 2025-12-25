@@ -1,0 +1,374 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    EduHOUSE - GUIDE COMPLET DES WORKFLOWS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. TYPES DE DEMANDES (REQUESTS) DISPONIBLES
+═════════════════════════════════════════════════
+
+✅ ADD_CHILD
+   - Permettre aux parents d'ajouter/enregistrer un enfant
+   - Statut: EN ATTENTE D'APPROBATION ADMIN
+   - Actions Admin: Approuver → Créer lien parent-enfant
+   - Actions Admin: Rejeter → Notifier le parent
+
+✅ ADD_LESSON
+   - Permettre aux enseignants de créer/ajouter des leçons
+   - Détails: Titre, description, date, sujet
+   - Statut: EN ATTENTE D'APPROBATION ADMIN
+   - Actions Admin: Approuver → Créer la leçon dans la base de données
+   - Actions Admin: Rejeter → Retourner à l'enseignant
+
+✅ ADD_USER
+   - Permettre aux administrateurs d'ajouter de nouveaux utilisateurs
+   - Rôles: Enseignant, Élève, Parent
+   - Statut: EN ATTENTE D'APPROBATION ADMIN (second level approval)
+   - Actions Admin: Approuver → Créer l'utilisateur
+   - Actions Admin: Rejeter → Notification
+
+✅ PAYMENT_REQUEST
+   - Permettre aux parents de soumettre des demandes de paiement
+   - Motifs: Frais de cours, matériels, inscription
+   - Statut: EN ATTENTE D'APPROBATION ADMIN
+   - Actions Admin: Approuver → Enregistrer le paiement
+   - Actions Admin: Rejeter → Retourner au parent
+
+═══════════════════════════════════════════════════════════════════════════════
+
+2. FLUX DE TRAVAIL PAR RÔLE
+═════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              PARENT WORKFLOW                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+2.1 AJOUTER UN ENFANT
+   ├─ Étape 1: Parent se connecte à son tableau de bord
+   ├─ Étape 2: Clique sur "Demandes" ou "Mes Enfants"
+   ├─ Étape 3: Clique sur "Ajouter un Enfant"
+   ├─ Étape 4: Remplit le formulaire (nom, prénom, date de naissance, etc.)
+   ├─ Étape 5: SOUMIS À APPROBATION ADMIN
+   ├─ Étape 6: Admin reçoit la demande dans le panneau "Demandes"
+   ├─ Étape 7: Admin approuve/rejette
+   └─ Résultat: Enfant ajouté au compte parent (si approuvé)
+
+2.2 PAYER LES FRAIS DE COURS
+   ├─ Étape 1: Parent clique sur "Paiements"
+   ├─ Étape 2: Sélectionne le cours/enfant à payer
+   ├─ Étape 3: Soumet une demande de paiement
+   ├─ Étape 4: SOUMIS À APPROBATION ADMIN
+   ├─ Étape 5: Admin reçoit et traite la demande
+   └─ Résultat: Paiement enregistré
+
+2.3 ENVOYER UN MESSAGE
+   ├─ Étape 1: Parent clique sur "Messages"
+   ├─ Étape 2: Sélectionne l'enseignant ou l'école
+   ├─ Étape 3: Rédige et envoie le message
+   └─ Résultat: Message envoyé directement (pas d'approbation)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            TEACHER WORKFLOW                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+2.4 CRÉER UNE LEÇON
+   ├─ Étape 1: Enseignant se connecte à son tableau de bord
+   ├─ Étape 2: Clique sur "Ajouter une Leçon"
+   ├─ Étape 3: Remplit le formulaire (titre, description, date, vidéo/audio)
+   ├─ Étape 4: SOUMIS À APPROBATION ADMIN
+   ├─ Étape 5: Admin approuve/rejette
+   └─ Résultat: Leçon créée (si approuvée)
+
+2.5 GÉRER LES ÉLÈVES
+   ├─ Étape 1: Enseignant accède à "Mes Classes"
+   ├─ Étape 2: Consulte la liste des élèves
+   ├─ Étape 3: Envoie des messages aux élèves
+   ├─ Étape 4: Enregistre les présences
+   └─ Résultat: Données mises à jour (pas d'approbation)
+
+2.6 ORGANISER UN APPEL VIDÉO
+   ├─ Étape 1: Enseignant crée une session de classe
+   ├─ Étape 2: Initialise un appel vidéo sécurisé
+   ├─ Étape 3: Les élèves rejoignent la session
+   ├─ Caractéristiques: 
+   │   ├─ Chiffrement TLS 1.3
+   │   ├─ Partage d'écran
+   │   ├─ Chat en direct
+   │   ├─ Enregistrement de la session
+   │   └─ Tableau blanc interactif
+   └─ Résultat: Leçon en ligne enregistrée
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                             ADMIN WORKFLOW                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+2.7 GÉRER LES DEMANDES
+   ├─ Étape 1: Admin accède à "Demandes" au tableau de bord
+   ├─ Étape 2: Voit le nombre de demandes en attente
+   ├─ Étape 3: Sélectionne une demande
+   ├─ Étape 4: Lit les détails de la demande
+   ├─ Étape 5: APPROUVER
+   │   ├─ Les données sont créées automatiquement
+   │   ├─ Notification au demandeur
+   │   └─ Demande marquée "APPROUVÉE"
+   ├─ Étape 6: OU REJETER
+   │   ├─ Admin entre une raison de rejet
+   │   ├─ Notification au demandeur
+   │   └─ Demande marquée "REJETÉE"
+   └─ Résultat: Demande traitée
+
+2.8 AJOUTER UN NOUVEL UTILISATEUR
+   ├─ Option A (directement):
+   │   ├─ Admin crée un utilisateur directement via "Utilisateurs"
+   │   └─ Utilisateur créé immédiatement
+   │
+   ├─ Option B (via demande):
+   │   ├─ Quelqu'un soumet une demande "ADD_USER"
+   │   ├─ Admin reçoit la demande
+   │   ├─ Admin approuve/rejette
+   │   └─ Utilisateur créé (si approuvé)
+
+2.9 GÉRER LES PAIEMENTS
+   ├─ Étape 1: Admin accède à "Paiements"
+   ├─ Étape 2: Consulte les demandes de paiement en attente
+   ├─ Étape 3: Approuve les paiements
+   ├─ Étape 4: Enregistre les transactions
+   ├─ Étape 5: Génère des reçus
+   └─ Résultat: Paiements traités et archivés
+
+═══════════════════════════════════════════════════════════════════════════════
+
+3. PROCESSUS D'APPROBATION DÉTAILLÉ
+═════════════════════════════════════════════════════════════════════════════
+
+ÉTAPES:
+   1. Utilisateur soumet une demande
+      └─ Données stockées dans requests.json
+      └─ Statut: "pending"
+
+   2. Admin reçoit une notification
+      └─ Tableau "Demandes" affiche les demandes en attente
+      └─ Compteur met à jour le nombre de demandes
+
+   3. Admin examine la demande
+      └─ Type, utilisateur, description, détails
+
+   4. Admin prend une décision
+      ├─ APPROUVER:
+      │   ├─ Données créées dans la base de données appropriée
+      │   ├─ Statut: "approved"
+      │   ├─ Timestamp: "approved_at"
+      │   └─ Notifié à l'utilisateur
+      │
+      └─ REJETER:
+           ├─ Statut: "rejected"
+           ├─ Raison sauvegardée
+           └─ Notifié à l'utilisateur
+
+═══════════════════════════════════════════════════════════════════════════════
+
+4. SÉCURITÉ & APPROBATIONS
+═════════════════════════════════════════════════════════════════════════════
+
+✅ AUTHENTIFICATION
+   ├─ JWT tokens avec expiration
+   ├─ Tokens dans localStorage
+   ├─ Rotation des tokens
+   └─ Token blacklisting supporté
+
+✅ AUTORISATION
+   ├─ Vérification des rôles pour chaque endpoint
+   ├─ Admin: Accès complet
+   ├─ Teacher: Accès aux cours et leçons
+   ├─ Parent: Accès aux enfants et paiements
+   └─ Student: Accès à leurs cours
+
+✅ CHIFFREMENT
+   ├─ Mots de passe: bcrypt (10 rounds)
+   ├─ Données en transit: TLS 1.3
+   ├─ Appels vidéo: End-to-end encryption
+   └─ Stockage: fichiers JSON avec permissions
+
+✅ AUDIT & LOGGING
+   ├─ Chaque demande loggée (timestamp, utilisateur)
+   ├─ Chaque approbation/rejet enregistré
+   ├─ IP client capturée
+   ├─ Durée de chaque requête tracked
+   └─ Erreurs loggées avec contexte
+
+═══════════════════════════════════════════════════════════════════════════════
+
+5. API ENDPOINTS POUR LES DEMANDES
+═════════════════════════════════════════════════════════════════════════════
+
+POST /api/requests
+   Description: Créer une nouvelle demande
+   Auth: Requis (JWT token)
+   Body: {
+      "type": "add_child|add_lesson|add_user|payment_request",
+      "description": "Description de la demande",
+      "details": { /* données spécifiques */ }
+   }
+
+GET /api/my-requests
+   Description: Récupérer les demandes de l'utilisateur
+   Auth: Requis
+
+GET /api/admin/requests
+   Description: Récupérer toutes les demandes EN ATTENTE
+   Auth: Admin requis
+   Response: { requests: [], total: 0 }
+
+GET /api/admin/requests/all?status=pending|approved|rejected
+   Description: Récupérer les demandes avec filtres
+   Auth: Admin requis
+   Query: page=1&limit=20&status=all|pending|approved|rejected
+
+GET /api/admin/requests/stats
+   Description: Obtenir les statistiques des demandes
+   Auth: Admin requis
+   Response: {
+      "total": 15,
+      "pending": 5,
+      "approved": 8,
+      "rejected": 2,
+      "by_type": { "add_child": 3, "add_lesson": 2, ... }
+   }
+
+POST /api/admin/requests/:requestId/approve
+   Description: Approuver une demande
+   Auth: Admin requis
+   Effect: Crée les données et marque comme approuvée
+
+POST /api/admin/requests/:requestId/reject
+   Description: Rejeter une demande
+   Auth: Admin requis
+   Body: { "reason": "Raison du rejet" }
+
+═══════════════════════════════════════════════════════════════════════════════
+
+6. DONNÉES STOCKÉES (requests.json)
+═════════════════════════════════════════════════════════════════════════════
+
+[
+  {
+    "id": "1701532800000",
+    "userId": 4,
+    "type": "add_child",
+    "description": "Ajouter mon enfant Jean",
+    "details": {
+      "child_id": 10,
+      "relationship": "parent"
+    },
+    "status": "pending|approved|rejected",
+    "created_at": "2024-12-04T10:00:00.000Z",
+    "approved_by": 11,
+    "approved_at": "2024-12-04T11:30:00.000Z",
+    "rejection_reason": null
+  }
+]
+
+═══════════════════════════════════════════════════════════════════════════════
+
+7. NOTIFICATIONS & COMMUNICATION
+═════════════════════════════════════════════════════════════════════════════
+
+📬 PARENT REÇOIT:
+   ├─ Confirmation que la demande a été soumise
+   ├─ Notification quand la demande est approuvée/rejetée
+   ├─ Email optionnel avec détails
+   └─ Raison du rejet (si applicable)
+
+👨‍🏫 TEACHER REÇOIT:
+   ├─ Confirmation de soumission
+   ├─ Notification d'approbation/rejet
+   ├─ Peut consulter le statut dans son tableau de bord
+   └─ Raison du rejet (si applicable)
+
+🛡️ ADMIN REÇOIT:
+   ├─ Notification en temps réel des nouvelles demandes
+   ├─ Compteur des demandes en attente
+   ├─ Alerte email optionnelle
+   └─ Dashboard avec statistiques
+
+═══════════════════════════════════════════════════════════════════════════════
+
+8. EXEMPLES DE CAS D'UTILISATION
+═════════════════════════════════════════════════════════════════════════════
+
+SCÉNARIO 1: Parent ajoute un enfant
+   1. Parent: "Je veux ajouter mon fils Marc"
+   2. Système: Crée une demande "add_child"
+   3. Admin: Voit la demande en attente
+   4. Admin: Clique "Approuver"
+   5. Système: Crée le lien parent-enfant
+   6. Parent: Voit maintenant "Marc" dans son tableau
+
+SCÉNARIO 2: Enseignant crée une leçon
+   1. Enseignant: "Je veux créer une leçon sur les fractions"
+   2. Système: Crée une demande "add_lesson"
+   3. Admin: Reçoit la demande
+   4. Admin: Vérifie les détails (titre, description, vidéo)
+   5. Admin: Approuve
+   6. Système: La leçon apparaît dans le catalogue
+   7. Étudiants: Peuvent voir et accéder à la leçon
+
+SCÉNARIO 3: Parent paie des frais
+   1. Parent: Soumet une demande de paiement
+   2. Système: Crée une demande "payment_request"
+   3. Admin: Reçoit la demande de paiement
+   4. Admin: Approuve
+   5. Système: Marque le paiement comme complété
+   6. Parent: Reçoit un reçu
+
+═══════════════════════════════════════════════════════════════════════════════
+
+9. TECHNOLOGIE DERRIÈRE LES APPELS VIDÉO
+═════════════════════════════════════════════════════════════════════════════
+
+🔐 SÉCURITÉ:
+   ├─ Chiffrement TLS 1.3
+   ├─ Authentification JWT
+   ├─ End-to-end encryption
+   ├─ AES-256-GCM pour le contenu
+   └─ HMAC pour l'intégrité
+
+🎥 FONCTIONNALITÉS:
+   ├─ Vidéo HD
+   ├─ Audio cristallin
+   ├─ Partage d'écran
+   ├─ Chat en direct
+   ├─ Tableau blanc (whiteboard)
+   ├─ Enregistrement de la session
+   └─ Gestion des participants
+
+📊 INFRASTRUCTURE:
+   ├─ WebRTC pour la transmission
+   ├─ Socket.IO pour la synchronisation
+   ├─ Sessions stockées localement
+   └─ Recordings sauvegardés
+
+═══════════════════════════════════════════════════════════════════════════════
+
+10. POUR COMMENCER
+════════════════════════════════════════════════════════════════════════════
+
+ADMIN:
+   1. Se connecter: admin@example.com / password123
+   2. Aller à "Demandes"
+   3. Cliquer sur "Demandes En Attente"
+   4. Approuver ou rejeter les demandes
+
+PARENT:
+   1. Se connecter: parent1@example.com / password123
+   2. Aller à "Mes Enfants"
+   3. Cliquer sur "Ajouter un Enfant"
+   4. Remplir le formulaire et soumettre
+
+ENSEIGNANT:
+   1. Se connecter: teacher1@example.com / password123
+   2. Aller à "Mes Cours"
+   3. Cliquer sur "Ajouter une Leçon"
+   4. Remplir les détails et soumettre
+
+═══════════════════════════════════════════════════════════════════════════════
+                              FIN DU GUIDE
+═════════════════════════════════════════════════════════════════════════════

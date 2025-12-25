@@ -15,7 +15,8 @@ const DB_FILES = {
     grades: path.join(DATA_DIR, 'grades.json'),
     payments: path.join(DATA_DIR, 'payments.json'),
     announcements: path.join(DATA_DIR, 'announcements.json'),
-    lessons: path.join(DATA_DIR, 'lessons.json')
+    lessons: path.join(DATA_DIR, 'lessons.json'),
+    requests: path.join(DATA_DIR, 'requests.json')
 };
 
 // Ensure data directory exists
@@ -41,7 +42,7 @@ function initializeDatabase() {
     // Initialize other files
     const emptyFiles = [
         'classes', 'enrollments', 'parentChild', 'homework', 'submissions',
-        'messages', 'attendance', 'grades', 'payments', 'announcements', 'lessons'
+        'messages', 'attendance', 'grades', 'payments', 'announcements', 'lessons', 'requests'
     ];
 
     emptyFiles.forEach(file => {
