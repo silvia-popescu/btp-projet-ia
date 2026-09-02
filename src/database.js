@@ -213,22 +213,22 @@ function writeFile(filename, data) {
         console.error(`Error writing ${filename}:`, e);
         return false;
     }
+}
 
-    function resolveDataFile(key) {
-        const file = DB_FILES[key];
-        if (!file) {
-            throw new Error(`Unknown data key: ${key}`);
-        }
-        return file;
+function resolveDataFile(key) {
+    const file = DB_FILES[key];
+    if (!file) {
+        throw new Error(`Unknown data key: ${key}`);
     }
+    return file;
+}
 
-    function readData(key) {
-        return readFile(resolveDataFile(key));
-    }
+function readData(key) {
+    return readFile(resolveDataFile(key));
+}
 
-    function writeData(key, data) {
-        return writeFile(resolveDataFile(key), data);
-    }
+function writeData(key, data) {
+    return writeFile(resolveDataFile(key), data);
 }
 
 function getNextId(filename) {
