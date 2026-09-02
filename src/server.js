@@ -716,17 +716,18 @@ app.post('/api/admin/payment', verifyToken, requireRole('admin'), (req, res) => 
 
 app.post('/api/video-conference', verifyToken, (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
         const conferenceId = 'conf-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-        const user = db.getUserById(decoded.id);
+        const user = db.findUserById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
         
         const conference = {
             id: conferenceId,
-            createdBy: decoded.id,
+            createdBy: req.user.id,
             creatorName: user.name,
             createdAt: new Date().toISOString(),
-            participants: [{ id: decoded.id, name: user.name, role: user.role }],
+            participants: [{ id: req.user.id, name: user.name, role: user.role }],
             status: 'active',
             encryption: 'end-to-end-tls',
             recording: true,
@@ -776,12 +777,10 @@ app.get('/api/security/status', (req, res) => {
 app.post('/api/requests', verifyToken, (req, res) => {
     try {
         const { type, description, details } = req.body;
-        const token = req.headers.authorization?.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
         
         const requestData = {
             id: Date.now().toString(),
-            userId: decoded.id,
+            userId: req.user.id,
             type: type, // 'add_child', 'add_lesson', 'add_user', 'payment_request', etc.
             description: description,
             details: details,
@@ -845,11 +844,8 @@ app.get('/api/admin/requests/all', verifyToken, requireRole('admin'), (req, res)
 // Get user's own requests
 app.get('/api/my-requests', verifyToken, (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
-        
         const requests = db.readData('requests');
-        const userRequests = requests.filter(r => r.userId === decoded.id);
+        const userRequests = requests.filter(r => r.userId === req.user.id);
         
         res.json({ success: true, requests: userRequests });
     } catch (err) {
@@ -862,8 +858,6 @@ app.post('/api/admin/requests/:requestId/approve', verifyToken, requireRole('adm
     try {
         const { requestId } = req.params;
         const { action_details } = req.body;
-        const token = req.headers.authorization?.split(' ')[1];
-        const decoded = jwt.verify(token, JWT_SECRET);
         
         const requests = db.readData('requests');
         const request = requests.find(r => r.id === requestId);
@@ -873,7 +867,7 @@ app.post('/api/admin/requests/:requestId/approve', verifyToken, requireRole('adm
         }
         
         request.status = 'approved';
-        request.approved_by = decoded.id;
+        request.approved_by = req.user.id;
         request.approved_at = new Date().toISOString();
         
         // Execute the action based on request type
@@ -989,7 +983,7 @@ app.get('/api/admin/statistics', verifyToken, requireRole('admin'), (req, res) =
             total_teachers: users.filter(u => u.role === 'teacher').length,
             total_parents: users.filter(u => u.role === 'parent').length,
             total_classes: classes.length,
-            total_revenue: payments.reduce((sum, p) => sum + (p.amount || 0), 0)
+            total_revenue: payments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
         };
         res.json({ stats });
     } catch (err) {
@@ -1035,6 +1029,10 @@ app.put('/api/message/:messageId/read', verifyToken, (req, res) => {
 // ============================================
 // STATIC FILES & FALLBACK
 // ============================================
+
+app.get('/healthz', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'index.html'));
